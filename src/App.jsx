@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 
 const initialData = {
   services: [
-    { id: "s1", title: "Bireysel Psikoterapi", description: "Ergen ve yetişkinlerle; Bilişsel Davranışçı Terapi (BDT) ve EMDR yaklaşımlarını içeren bireysel çalışmalar.", price: "50 dakika · Yüz yüze / online", icon: "○" },
-    { id: "s2", title: "Sanat Terapisi", description: "Sanat terapisi temelli grup çalışmalarıyla kendinizi yaratıcı yollarla keşfedebileceğiniz bir alan.", price: "Grup çalışmaları", icon: "⌁" },
-    { id: "s3", title: "Yaratıcı Atölyeler", description: "Duygulara, ilişkilere ve kendini keşfetmeye alan açan yaratıcı atölyeler.", price: "Atölye çalışmaları", icon: "✳" },
+    { id: "s1", title: "Bireysel Danışmanlık", description: "Ergen ve yetişkinlerle; kişinin ihtiyaçlarına, kendi hızına ve bireysel farklılıklarına duyarlı görüşmeler.", price: "50 dakika · Yüz yüze / online", icon: "○" },
+    { id: "s2", title: "BDT ve EMDR Odaklı Çalışmalar", description: "Bilişsel Davranışçı yaklaşım ve EMDR’yi mesleki çalışmalarıma dahil ederek kişiye uygun bir yol izliyorum.", price: "Bireysel görüşmeler", icon: "⌁" },
+    { id: "s3", title: "Ergen Danışmanlığı", description: "Ergenlik dönemine uyum, kimlik gelişimi, sınav kaygısı ve akran ilişkileri üzerine bireysel görüşmeler.", price: "50 dakika · Yüz yüze / online", icon: "◇" },
+    { id: "s4", title: "Sanat Temelli Grup Çalışmaları", description: "Sanat yoluyla kendini ifade etmeye ve içsel kaynakları keşfetmeye alan açan grup çalışmaları.", price: "Grup çalışmaları", icon: "⌁" },
+    { id: "s5", title: "Yaratıcı Atölyeler", description: "Yaratıcılığı ve kendini keşfetmeyi odağına alan atölye buluşmaları.", price: "Atölye çalışmaları", icon: "✳" },
   ],
   posts: [
     { id: "p1", title: "Kendine şefkat göstermeyi öğrenmek", category: "İYİ OLMA HALİ", date: "12 MAYIS 2025", excerpt: "Kendimizle kurduğumuz ilişki, hayatımızdaki her ilişkiye eşlik eder. Peki bu ilişkiyi nasıl yumuşatabiliriz?" },
@@ -36,6 +38,12 @@ const previousDefaults = {
   },
 };
 
+const publishedServiceDefaults = [
+  { id: "s1", title: "Bireysel Psikoterapi", description: "Ergen ve yetişkinlerle; Bilişsel Davranışçı Terapi (BDT) ve EMDR yaklaşımlarını içeren bireysel çalışmalar.", price: "50 dakika · Yüz yüze / online", icon: "○" },
+  { id: "s2", title: "Sanat Terapisi", description: "Sanat terapisi temelli grup çalışmalarıyla kendinizi yaratıcı yollarla keşfedebileceğiniz bir alan.", price: "Grup çalışmaları", icon: "⌁" },
+  { id: "s3", title: "Yaratıcı Atölyeler", description: "Duygulara, ilişkilere ve kendini keşfetmeye alan açan yaratıcı atölyeler.", price: "Atölye çalışmaları", icon: "✳" },
+];
+
 function readData(key) {
   try {
     const stored = localStorage.getItem(`buse-${key}`);
@@ -52,18 +60,23 @@ function readData(key) {
       };
     }
     if (key === "services" && Array.isArray(saved)) {
-      return saved.map(service => {
-        const previous = previousDefaults.services.find(item => item.id === service.id);
-        const current = initialData.services.find(item => item.id === service.id);
-        if (!previous || !current) return service;
-        return {
-          ...service,
-          ...Object.fromEntries(Object.entries(current).map(([field, value]) => [
-            field,
-            service[field] === previous[field] ? value : (service[field] ?? value),
-          ])),
-        };
-      });
+      const knownDefaults = [previousDefaults.services, publishedServiceDefaults, initialData.services];
+      const matchingDefaults = knownDefaults.find(defaults => defaults.every(defaultService => (
+        saved.some(service => service.id === defaultService.id
+          && Object.entries(defaultService).every(([field, value]) => service[field] === value))
+      )));
+      if (matchingDefaults) {
+        const customServices = saved.filter(service => !matchingDefaults.some(defaultService => (
+          service.id === defaultService.id
+            && Object.entries(defaultService).every(([field, value]) => service[field] === value)
+        )));
+        const defaultServices = structuredClone(initialData.services);
+        return [
+          ...defaultServices,
+          ...customServices.filter(service => !defaultServices.some(defaultService => defaultService.id === service.id)),
+        ];
+      }
+      return saved;
     }
     return saved;
   } catch (error) {
@@ -133,7 +146,7 @@ function Hero() {
       <div className="hero-copy">
         <Eyebrow className="hero-kicker">Uzman Klinik Psikolog &nbsp;·&nbsp; İstanbul</Eyebrow>
         <h1><Reveal direction="down">İçine</Reveal><Reveal>bak.</Reveal><Reveal direction="down">Yer aç.</Reveal></h1>
-        <Reveal direction="down"><p>Kendinle yeniden tanışmaya, hissettiklerine alan açmaya ve kendi yolunu bulmaya davetlisin.</p></Reveal>
+        <Reveal direction="down"><p>Uzman Klinik Psikolog Buse Coşkun olarak İstanbul Suadiye’de yüz yüze ve online; ergen ve yetişkinlerle psikolojik danışmanlık görüşmeleri yürütüyorum. Çalışmalarımda BDT, EMDR ve sanat temelli yaklaşımlara yer veriyorum.</p></Reveal>
         <Reveal className="hero-actions"><a className="pill dark" href="#contact">Bir adım at <span className="arrow">↗</span></a><a className="text-link" href="#about">Buse kimdir?</a></Reveal>
         <Reveal direction="down" className="hero-note">Burada, senin hızında.</Reveal>
       </div>
@@ -149,7 +162,7 @@ function Services({ services }) {
   return (
     <section className="section wrap" id="services">
       <div className="section-head">
-        <div><Reveal direction="down"><Eyebrow>01 &nbsp; / &nbsp; Terapi ve çalışmalar</Eyebrow></Reveal><Reveal><h2 className="section-title">Birlikte<br />çalışalım.</h2></Reveal></div>
+        <div><Reveal direction="down"><Eyebrow>01 &nbsp; / &nbsp; Danışmanlık ve çalışmalar</Eyebrow></Reveal><Reveal><h2 className="section-title">Birlikte<br />çalışalım.</h2></Reveal></div>
         <Reveal direction="down"><p className="section-subtitle">İhtiyacına ve yaşam ritmine göre, sana özel bir alan.</p></Reveal>
       </div>
       <div className="services">
@@ -168,16 +181,16 @@ function FocusAreas() {
   const areas = [
     {
       icon: "◎",
-      title: "Bireysel Psikoterapi",
-      tags: ["Ergen", "Yetişkin", "BDT", "EMDR", "Sanat Terapisi"],
-      description: "Ergen ve yetişkinlerle bireysel psikoterapi; kişisel ihtiyaçlara ve kişinin kendi hızına duyarlı çalışma.",
+      title: "Bireysel Danışmanlık",
+      tags: ["Ergen", "Yetişkin", "BDT", "EMDR"],
+      description: "Ergen ve yetişkinlerle bireysel danışmanlık; kişisel ihtiyaçlara ve kişinin kendi hızına duyarlı çalışma.",
       tone: "sage",
     },
     {
       icon: "✳",
       title: "Travma ve EMDR",
       tags: ["Travmatik yaşantılar ve travma sonrası stres"],
-      description: "Travmatik yaşantılar ve sonrasındaki etkiler üzerine destekleyici psikoterapi çalışmaları.",
+      description: "Travmatik yaşantılar ve sonrasındaki etkiler üzerine destekleyici bireysel danışmanlık çalışmaları.",
       tone: "rose",
     },
     {
@@ -189,7 +202,7 @@ function FocusAreas() {
     },
     {
       icon: "◇",
-      title: "Ergenlik ve Gelişim",
+      title: "Ergen Danışmanlığı",
       tags: ["Ergenlik dönemine uyum ve kimlik gelişimi", "Sınav kaygısı ve akademik stres", "Akran ilişkileri ve sosyal uyum sorunları"],
       description: "Ergenlik dönemine uyum, akademik stres ve sosyal ilişkiler üzerine çalışmalar.",
       tone: "mint",
@@ -198,7 +211,7 @@ function FocusAreas() {
       icon: "♡",
       title: "İlişkiler ve Benlik",
       tags: ["Kişilik örüntüleri ve kişilik bozuklukları", "Aile içi iletişim ve çatışmalar", "Özsaygı ve benlik algısı", "İlişki ve kişilerarası iletişim sorunları"],
-      description: "Aile içi iletişim, kişilerarası ilişkiler ve benlik algısına yönelik psikoterapi.",
+      description: "Aile içi iletişim, kişilerarası ilişkiler ve benlik algısına yönelik bireysel danışmanlık.",
       tone: "lilac",
     },
   ];
@@ -207,12 +220,12 @@ function FocusAreas() {
     <section className="focus-section" id="focus">
       <div className="focus-wrap">
         <div className="focus-heading">
-          <Eyebrow>02 &nbsp; / &nbsp; Uzmanlık alanları</Eyebrow>
-          <h2>Size Özel Psikolojik Destek</h2>
-          <p>Her bireyin ihtiyaçları farklıdır. Ergen ve yetişkinlerle bilimsel temele dayalı, kişiye özel psikoterapi çalışmaları yürütüyorum.</p>
+          <Reveal direction="down"><Eyebrow>02 &nbsp; / &nbsp; Uzmanlık alanları</Eyebrow></Reveal>
+          <Reveal><h2>Size Özel Psikolojik Destek</h2></Reveal>
+          <Reveal direction="down"><p>İstanbul Suadiye’de yüz yüze ve online olarak; ergen ve yetişkinlerle kaygı, travmatik yaşantılar, duygu durumu, ilişkiler ve benlik algısı üzerine kişiye özel danışmanlık çalışmaları yürütüyorum.</p></Reveal>
         </div>
         <div className="focus-list">{areas.map(area => (
-          <article className={`focus-card focus-card-${area.tone}`} key={area.title}>
+          <article className={`focus-card focus-card-${area.tone} reveal reveal-up`} key={area.title}>
             <span className="focus-card-icon" aria-hidden="true">{area.icon}</span>
             <h3>{area.title}</h3>
             <ul>{area.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>
@@ -273,17 +286,17 @@ function About() {
                 <div className="education-card"><span>02</span><div><strong>Üsküdar Üniversitesi</strong><small>Klinik Psikoloji · Yüksek lisans</small></div></div>
               </div>
               <div className="about-methods">
-                <Eyebrow>Terapi yaklaşımları</Eyebrow>
-                <ul>{["BDT", "EMDR", "Sanat Terapisi"].map(approach => <li key={approach}>{approach}</li>)}</ul>
+                <Eyebrow>Çalışma yaklaşımları</Eyebrow>
+                <ul>{["BDT", "EMDR", "Sanat temelli çalışmalar"].map(approach => <li key={approach}>{approach}</li>)}</ul>
               </div>
             </Reveal>
           </aside>
           <Reveal className="about-main-card">
             <div className="about-bio">
               <Eyebrow>Mesleki profil ve klinik yaklaşım</Eyebrow>
-              <p>Üsküdar Üniversitesi Psikoloji Bölümü’nden mezun olduktan sonra aynı üniversitede Klinik Psikoloji yüksek lisans eğitimimi tamamladım. Mesleki çalışmalarımı Bilişsel Davranışçı Terapi (BDT), EMDR ve Sanat Terapisi alanlarında sürdürerek farklı terapi yaklaşımlarını mesleki pratiğime dahil ediyorum.</p>
-              <p>Ergen ve yetişkinlerle bireysel psikoterapi çalışmalarının yanı sıra sanat terapisi temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.</p>
-              <p>Terapi sürecini; bireyin kendisini tanımasına, yaşantılarına farklı bir perspektiften bakabilmesine ve kendi içsel kaynaklarını keşfedebilmesine alan açan bir yolculuk olarak görüyorum. Her bireyin kendine özgü hikâyesine saygı duymayı, bilimsel ve etik ilkeler doğrultusunda güvene dayalı bir ilişki kurmayı önemsiyorum.</p>
+              <p>Üsküdar Üniversitesi Psikoloji Bölümü’nden mezun olduktan sonra aynı üniversitede Klinik Psikoloji yüksek lisans eğitimimi tamamladım. Mesleki çalışmalarımı Bilişsel Davranışçı yaklaşım (BDT), EMDR ve sanat temelli çalışmalar alanlarında sürdürüyorum.</p>
+              <p>Ergen ve yetişkinlerle bireysel danışmanlığın yanı sıra sanat temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.</p>
+              <p>Danışmanlık sürecini; bireyin kendisini tanımasına, yaşantılarına farklı bir perspektiften bakabilmesine ve kendi içsel kaynaklarını keşfedebilmesine alan açan bir yolculuk olarak görüyorum. Her bireyin kendine özgü hikâyesine saygı duymayı, bilimsel ve etik ilkeler doğrultusunda güvene dayalı bir ilişki kurmayı önemsiyorum.</p>
             </div>
             <div className="about-topic-group">
               <Eyebrow>Çalışma alanları</Eyebrow>
@@ -301,6 +314,113 @@ function About() {
   );
 }
 
+function CounselingProcess() {
+  const steps = [
+    {
+      title: "İletişim kurun",
+      description: "Telefon, WhatsApp veya randevu formu aracılığıyla ulaşın; yüz yüze ya da online görüşme tercihinizi paylaşın.",
+    },
+    {
+      title: "İhtiyaçlarınızı konuşalım",
+      description: "İlk görüşmede sizi buraya getiren konuları, beklentilerinizi ve nasıl bir destek aradığınızı birlikte ele alalım.",
+    },
+    {
+      title: "Size uygun bir yol belirleyelim",
+      description: "Bireysel farklılıklarınızı ve ihtiyaçlarınızı gözeterek görüşmelerin odağını ve çalışma yaklaşımını birlikte şekillendirelim.",
+    },
+    {
+      title: "Süreci birlikte değerlendirelim",
+      description: "Görüşmeler ortalama 50 dakika sürer. İhtiyaçlarınızı ve sürecin nasıl ilerlediğini görüşmelerde birlikte ele alırız.",
+    },
+  ];
+  const principles = [
+    "Gizlilik ve mahremiyet",
+    "Yargısız ve güvenli alan",
+    "Bilimsel ve etik yaklaşım",
+    "Bireysel farklılıklara saygı",
+    "Güven temelli danışmanlık ilişkisi",
+  ];
+
+  return (
+    <section className="process-section" id="process">
+      <div className="wrap process-wrap">
+        <header className="process-heading">
+          <Reveal direction="down"><Eyebrow>04 &nbsp; / &nbsp; Danışmanlık süreci</Eyebrow></Reveal>
+          <Reveal><h2>İlk görüşmeden itibaren,<br /><em>size özel</em> bir yol.</h2></Reveal>
+          <Reveal><p>Her danışmanlık süreci kendine özgüdür. Görüşmelerin yönünü ihtiyaçlarınızı ve beklentilerinizi birlikte değerlendirerek belirleriz.</p></Reveal>
+        </header>
+        <ol className="process-steps">
+          {steps.map((step, index) => (
+            <li className="process-step reveal reveal-up" key={step.title}>
+              <span className="process-step-number">0{index + 1}</span>
+              <div><h3>{step.title}</h3><p>{step.description}</p></div>
+            </li>
+          ))}
+        </ol>
+        <div className="process-principles">
+          <Reveal className="principles-intro">
+            <Eyebrow>Çalışma ilkelerim</Eyebrow>
+            <h3>Güven, saygı ve<br /><em>özenle.</em></h3>
+          </Reveal>
+          <ul>{principles.map((principle, index) => (
+            <li className="reveal reveal-up" key={principle}><span>0{index + 1}</span>{principle}</li>
+          ))}</ul>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FrequentlyAskedQuestions() {
+  const questions = [
+    {
+      question: "Görüşmeler ne kadar sürüyor?",
+      answer: "Görüşmeler ortalama 50 dakika sürmektedir.",
+    },
+    {
+      question: "Yüz yüze ve online görüşme seçenekleri var mı?",
+      answer: "Görüşmeler yüz yüze İstanbul / Suadiye’de veya online olarak gerçekleştirilebilir. Size uygun formatı iletişim sırasında belirtebilirsiniz.",
+    },
+    {
+      question: "Kimlerle çalışıyorsunuz?",
+      answer: "Ergen ve yetişkinlerle bireysel danışmanlık çalışmaları yürütüyorum. Ayrıca sanat temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.",
+    },
+    {
+      question: "İlk görüşmede neler konuşulur?",
+      answer: "İlk görüşmede ihtiyaçlarınızı, sizi görüşmeye getiren konuları ve beklentilerinizi ele alır; nasıl bir yol izlenebileceğini birlikte değerlendiririz.",
+    },
+    {
+      question: "Görüşmelerde paylaştıklarım gizli kalır mı?",
+      answer: "Gizlilik ve mahremiyet temel çalışma ilkelerim arasındadır. Gizliliğin kapsamı ve mesleki çerçeve hakkında ilk görüşmede bilgi paylaşılır.",
+    },
+    {
+      question: "Nasıl randevu oluşturabilirim?",
+      answer: "İletişim bölümündeki randevu formunu doldurabilir veya telefon ve WhatsApp üzerinden ulaşabilirsiniz.",
+    },
+  ];
+
+  return (
+    <section className="faq-section" id="faq">
+      <div className="wrap faq-wrap">
+        <header className="faq-heading">
+          <Reveal direction="down"><Eyebrow>05 &nbsp; / &nbsp; Sıkça sorulan sorular</Eyebrow></Reveal>
+          <Reveal><h2>Aklınızdaki <em>sorular.</em></h2></Reveal>
+          <Reveal><p>Görüşmeler ve danışmanlık süreci hakkında merak ettikleriniz.</p></Reveal>
+        </header>
+        <div className="faq-list">
+          {questions.map((item, index) => (
+            <details className="faq-item reveal reveal-up" key={item.question}>
+              <summary><span className="faq-number">0{index + 1}</span><span>{item.question}</span><span className="faq-toggle" aria-hidden="true" /></summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+        <Reveal className="faq-contact-note">Başka bir sorunuz mu var? <a href="#contact">Bana ulaşın <span aria-hidden="true">↗</span></a></Reveal>
+      </div>
+    </section>
+  );
+}
+
 function Booking({ services, settings, onSubmit }) {
   const phoneDigits = settings.phone.replace(/\D/g, "");
   const whatsappPhone = phoneDigits.startsWith("0") ? `90${phoneDigits.slice(1)}` : phoneDigits;
@@ -312,7 +432,7 @@ function Booking({ services, settings, onSubmit }) {
         <div className="booking-copy">
           <Reveal direction="down"><Eyebrow>İletişim &nbsp;·&nbsp; Suadiye, İstanbul</Eyebrow></Reveal>
           <Reveal><h2>Birlikte<br />başlayalım.</h2></Reveal>
-          <Reveal><p>Terapi süreci ve çalışma biçimim hakkında bilgi almak ya da randevu oluşturmak için bana ulaşabilirsiniz.</p></Reveal>
+          <Reveal><p>Danışmanlık süreci ve çalışma biçimim hakkında bilgi almak ya da randevu oluşturmak için bana ulaşabilirsiniz.</p></Reveal>
           <Reveal className="contact-facts">
             <div><span>Seans süresi</span><strong>Ortalama 50 dakika</strong></div>
             <div><span>Görüşme biçimi</span><strong>Yüz yüze · Online</strong></div>
@@ -351,7 +471,7 @@ function Footer({ settings }) {
       <div className="footer-main">
         <Brand footer />
         <div className="footer-nav">
-          <div><Eyebrow>Keşfet</Eyebrow><a href="#about">Hakkımda</a><a href="#services">Çalışma alanlarım</a><a href="#focus">Uzmanlık alanlarım</a></div>
+          <div><Eyebrow>Keşfet</Eyebrow><a href="#about">Hakkımda</a><a href="#services">Çalışma alanlarım</a><a href="#focus">Uzmanlık alanlarım</a><a href="#process">Danışmanlık süreci</a><a href="#faq">Sık sorulan sorular</a></div>
           <div><Eyebrow>İletişim</Eyebrow><a href={`mailto:${settings.email}`}>{settings.email}</a><a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a><a href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer">@{instagramHandle}</a></div>
         </div>
       </div>
@@ -362,16 +482,33 @@ function Footer({ settings }) {
 
 function Site({ data, setAppointments, notify }) {
   useEffect(() => {
+    let lastScrollY = window.scrollY;
+    let scrollDirection = "down";
+    const updateScrollDirection = () => {
+      const currentScrollY = window.scrollY;
+      scrollDirection = currentScrollY >= lastScrollY ? "down" : "up";
+      lastScrollY = currentScrollY;
+    };
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
-        entry.target.classList.toggle("is-visible", entry.isIntersecting);
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          entry.target.classList.toggle("reveal-from-bottom", scrollDirection === "down");
+          entry.target.classList.toggle("reveal-from-top", scrollDirection === "up");
+        } else {
+          entry.target.classList.remove("is-visible");
+        }
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+    window.addEventListener("scroll", updateScrollDirection, { passive: true });
     document.querySelectorAll(".reveal").forEach(element => {
       observer.observe(element);
       if (element.getBoundingClientRect().top < window.innerHeight * 0.92) element.classList.add("is-visible");
     });
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", updateScrollDirection);
+    };
   }, [data.services, data.posts]);
 
   function submitAppointment(event) {
@@ -400,7 +537,7 @@ function Site({ data, setAppointments, notify }) {
         <Hero /><Marquee />
         <Services services={data.services} /><FocusAreas />
         <section className="quote-band"><div className="wrap quote-inner reveal"><div className="quote-mark">“</div><blockquote>Her şey, kendine<br />kulak vermekle başlar.</blockquote><cite>Kendinle kurduğun ilişki, her şeyin başlangıcı.</cite></div></section>
-        <About /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
+        <About /><CounselingProcess /><FrequentlyAskedQuestions /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
       </main>
       <Footer settings={data.settings} />
     </>
