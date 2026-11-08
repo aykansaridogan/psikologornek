@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 
 const initialData = {
   services: [
-    { id: "s1", title: "Bireysel Terapi", description: "Kendinizi anlamak, duygularınıza alan açmak ve kendi yolunuzu bulmak için güvenli bir alan.", price: "50 dakika", icon: "○" },
-    { id: "s2", title: "Online Terapi", description: "Bulunduğunuz yerden, kendi ritminizde. Görüntülü görüşme ile aynı özenli ve güvenli süreç.", price: "50 dakika", icon: "⌁" },
-    { id: "s3", title: "Ön Görüşme", description: "Tanışmak, ihtiyaçlarınızı konuşmak ve birlikte çalışmanın size uygun olup olmadığını keşfetmek için.", price: "Ücretsiz · 20 dakika", icon: "✳" },
+    { id: "s1", title: "Bireysel Psikoterapi", description: "Ergen ve yetişkinlerle; Bilişsel Davranışçı Terapi (BDT) ve EMDR yaklaşımlarını içeren bireysel çalışmalar.", price: "50 dakika · Yüz yüze / online", icon: "○" },
+    { id: "s2", title: "Sanat Terapisi", description: "Sanat terapisi temelli grup çalışmalarıyla kendinizi yaratıcı yollarla keşfedebileceğiniz bir alan.", price: "Grup çalışmaları", icon: "⌁" },
+    { id: "s3", title: "Yaratıcı Atölyeler", description: "Duygulara, ilişkilere ve kendini keşfetmeye alan açan yaratıcı atölyeler.", price: "Atölye çalışmaları", icon: "✳" },
   ],
   posts: [
     { id: "p1", title: "Kendine şefkat göstermeyi öğrenmek", category: "İYİ OLMA HALİ", date: "12 MAYIS 2025", excerpt: "Kendimizle kurduğumuz ilişki, hayatımızdaki her ilişkiye eşlik eder. Peki bu ilişkiyi nasıl yumuşatabiliriz?" },
@@ -12,6 +12,21 @@ const initialData = {
     { id: "p3", title: "Sınırlar, yakınlık ve kendimiz", category: "İLİŞKİLER", date: "04 NİSAN 2025", excerpt: "Sınır koymak uzaklaşmak değil; ilişkide kendimize de bir yer açabilmektir." },
   ],
   appointments: [],
+  settings: {
+    email: "psk.busecoskun@gmail.com",
+    phone: "0530 299 41 64",
+    address: "İstanbul / Suadiye · Yüz yüze ve online",
+    hours: "Pazar hariç, 11.00 — 21.00",
+    instagram: "psk.busecoskun",
+  },
+};
+
+const previousDefaults = {
+  services: [
+    { id: "s1", title: "Bireysel Terapi", description: "Kendinizi anlamak, duygularınıza alan açmak ve kendi yolunuzu bulmak için güvenli bir alan.", price: "50 dakika", icon: "○" },
+    { id: "s2", title: "Online Terapi", description: "Bulunduğunuz yerden, kendi ritminizde. Görüntülü görüşme ile aynı özenli ve güvenli süreç.", price: "50 dakika", icon: "⌁" },
+    { id: "s3", title: "Ön Görüşme", description: "Tanışmak, ihtiyaçlarınızı konuşmak ve birlikte çalışmanın size uygun olup olmadığını keşfetmek için.", price: "Ücretsiz · 20 dakika", icon: "✳" },
+  ],
   settings: {
     email: "merhaba@busecoskun.com",
     phone: "+90 532 000 00 00",
@@ -24,7 +39,33 @@ const initialData = {
 function readData(key) {
   try {
     const stored = localStorage.getItem(`buse-${key}`);
-    return stored ? JSON.parse(stored) : structuredClone(initialData[key]);
+    if (!stored) return structuredClone(initialData[key]);
+
+    const saved = JSON.parse(stored);
+    if (key === "settings") {
+      return {
+        ...saved,
+        ...Object.fromEntries(Object.entries(initialData.settings).map(([field, value]) => [
+          field,
+          saved[field] === previousDefaults.settings[field] ? value : (saved[field] ?? value),
+        ])),
+      };
+    }
+    if (key === "services" && Array.isArray(saved)) {
+      return saved.map(service => {
+        const previous = previousDefaults.services.find(item => item.id === service.id);
+        const current = initialData.services.find(item => item.id === service.id);
+        if (!previous || !current) return service;
+        return {
+          ...service,
+          ...Object.fromEntries(Object.entries(current).map(([field, value]) => [
+            field,
+            service[field] === previous[field] ? value : (service[field] ?? value),
+          ])),
+        };
+      });
+    }
+    return saved;
   } catch (error) {
     console.error(`Kayıtlı ${key} verileri okunamadı:`, error);
     return structuredClone(initialData[key]);
@@ -45,10 +86,10 @@ function useStoredData(key) {
 
 function Brand({ footer = false }) {
   return footer ? (
-    <a className="footer-brand" href="#home">Buse <em>Çoşkun</em></a>
+    <a className="footer-brand" href="#home">Buse <em>Coşkun</em></a>
   ) : (
-    <a className="brand" href="#home" aria-label="Buse Çoşkun, ana sayfa">
-      <span className="brand-mark">b.</span><span className="brand-name">Buse Çoşkun</span>
+    <a className="brand" href="#home" aria-label="Buse Coşkun, ana sayfa">
+      <span className="brand-mark">b.</span><span className="brand-name">Buse Coşkun</span>
     </a>
   );
 }
@@ -69,7 +110,7 @@ function Header() {
         <Brand />
         <nav className={`nav-links${menuOpen ? " open" : ""}`} id="nav-links">
           <a href="#about" onClick={() => setMenuOpen(false)}>Hakkımda</a>
-          <a href="#services" onClick={() => setMenuOpen(false)}>Çalışma alanlarım</a>
+          <a href="#focus" onClick={() => setMenuOpen(false)}>Uzmanlık alanlarım</a>
           <a href="#journal" onClick={() => setMenuOpen(false)}>Journal</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>İletişim</a>
         </nav>
@@ -91,15 +132,15 @@ function Hero() {
   return (
     <section className="wrap hero" id="home">
       <div className="hero-copy">
-        <Eyebrow className="hero-kicker">Psikolog &nbsp;·&nbsp; Psikoterapist &nbsp;·&nbsp; İstanbul</Eyebrow>
+        <Eyebrow className="hero-kicker">Uzman Klinik Psikolog &nbsp;·&nbsp; İstanbul</Eyebrow>
         <h1><Reveal direction="down">İçine</Reveal><Reveal>bak.</Reveal><Reveal direction="down">Yer aç.</Reveal></h1>
         <Reveal direction="down"><p>Kendinle yeniden tanışmaya, hissettiklerine alan açmaya ve kendi yolunu bulmaya davetlisin.</p></Reveal>
         <Reveal className="hero-actions"><a className="pill dark" href="#contact">Bir adım at <span className="arrow">↗</span></a><a className="text-link" href="#about">Buse kimdir?</a></Reveal>
         <Reveal direction="down" className="hero-note">Burada, senin hızında.</Reveal>
       </div>
-      <div className="hero-image reveal" role="img" aria-label="Psikolog Buse Çoşkun portresi">
+      <div className="hero-image reveal" role="img" aria-label="Uzman Klinik Psikolog Buse Coşkun portresi">
         <div className="hero-stamp">Kendine<br />dönmek<br />mümkün ✳</div>
-        <div className="image-caption">Buse Çoşkun &nbsp; / &nbsp; Psikolog</div>
+        <div className="image-caption">Buse Coşkun &nbsp; / &nbsp; Uzman Klinik Psikolog</div>
       </div>
     </section>
   );
@@ -141,17 +182,52 @@ function Services({ services }) {
   );
 }
 
+function FocusAreas() {
+  const areas = [
+    "Travmatik yaşantılar ve travma sonrası stres",
+    "Anksiyete ve kaygı bozuklukları",
+    "Depresyon ve duygu durum güçlükleri",
+    "Panik bozukluk ve panik atak",
+    "Duygu düzenleme güçlükleri",
+    "Kişilik örüntüleri ve kişilik bozuklukları",
+    "Ergenlik dönemine uyum ve kimlik gelişimi",
+    "Sınav kaygısı ve akademik stres",
+    "Akran ilişkileri ve sosyal uyum sorunları",
+    "Aile içi iletişim ve çatışmalar",
+    "Özsaygı ve benlik algısı",
+    "İlişki ve kişilerarası iletişim sorunları",
+  ];
+
+  return (
+    <section className="focus-section" id="focus">
+      <div className="wrap focus-grid">
+        <div className="focus-intro">
+          <Eyebrow>Çalışma alanlarım</Eyebrow>
+          <h2>Farklı yaşam deneyimlerine <em>birlikte</em> bakalım.</h2>
+          <p>Ergen ve yetişkinlerle, kişinin ihtiyaçlarına ve kendi hikâyesine duyarlı bir yaklaşımla çalışıyorum.</p>
+        </div>
+        <ul className="focus-list">{areas.map(area => <li key={area}>{area}</li>)}</ul>
+      </div>
+    </section>
+  );
+}
+
 function About() {
   return (
     <section className="section wrap" id="about">
       <div className="about-grid">
-        <Reveal direction="down" className="about-photo" role="img" aria-label="Psikolog Buse Çoşkun portresi" />
+        <Reveal direction="down" className="about-photo" role="img" aria-label="Uzman Klinik Psikolog Buse Coşkun portresi" />
         <div className="about-copy">
           <Reveal direction="down"><Eyebrow>03 &nbsp; / &nbsp; Merhaba, ben Buse</Eyebrow></Reveal>
-          <Reveal direction="down"><h2>İnsan hikâyelerine <em>merakla</em> eşlik ediyorum.</h2></Reveal>
-          <Reveal><p>Psikoloji eğitimim ve klinik deneyimim boyunca, her bireyin kendi içgörüsünü ve iyileşme kapasitesini taşıdığına inandım. Çalışmalarımda bu kapasiteye alan açmayı önemsiyorum.</p></Reveal>
-          <Reveal><p>Terapi odasında acele etmeden, birlikte ve sizin hızınızda ilerliyoruz. Burada doğru ya da yanlış cevap yok; yalnızca sizin hikâyeniz var.</p></Reveal>
-          <Reveal className="credentials"><div className="credential"><strong>Psikoloji</strong>Lisans eğitimi</div><div className="credential"><strong>Psikoterapi</strong>Bütüncül yaklaşım</div></Reveal>
+          <Reveal direction="down"><h2>Uzman Klinik Psikolog <em>Buse Coşkun.</em></h2></Reveal>
+          <Reveal><p>Üsküdar Üniversitesi Psikoloji Bölümü’nden mezun olduktan sonra aynı üniversitede Klinik Psikoloji yüksek lisans eğitimimi tamamladım. Mesleki çalışmalarımı Bilişsel Davranışçı Terapi (BDT), EMDR ve Sanat Terapisi alanlarında sürdürerek farklı terapi yaklaşımlarını mesleki pratiğime dahil ediyorum.</p></Reveal>
+          <Reveal><p>Ergen ve yetişkinlerle bireysel psikoterapi çalışmalarının yanı sıra sanat terapisi temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.</p></Reveal>
+          <Reveal><p>Terapi sürecini, bireyin kendisini tanımasına, yaşantılarına farklı bir perspektiften bakabilmesine ve kendi içsel kaynaklarını keşfedebilmesine alan açan bir yolculuk olarak görüyorum. Her bireyin kendine özgü hikâyesine saygı duymayı, bilimsel ve etik ilkeler doğrultusunda güvene dayalı bir ilişki kurmayı önemsiyorum.</p></Reveal>
+          <Reveal className="credentials"><div className="credential"><strong>Üsküdar Üniversitesi</strong>Psikoloji lisans</div><div className="credential"><strong>Klinik Psikoloji</strong>Yüksek lisans</div></Reveal>
+          <Reveal className="approach-values">
+            <strong>Çalışma ilkelerim</strong>
+            <ul>{["Gizlilik ve mahremiyet", "Yargısız ve güvenli alan", "Bilimsel ve etik yaklaşım", "Bireysel farklılıklara saygı", "Güven temelli terapi ilişkisi"].map(value => <li key={value}>{value}</li>)}</ul>
+          </Reveal>
           <Reveal><a className="text-link" href="#contact">Birlikte çalışalım ↗</a></Reveal>
         </div>
       </div>
@@ -180,15 +256,26 @@ function Journal({ posts }) {
 }
 
 function Booking({ services, settings, onSubmit }) {
+  const phoneDigits = settings.phone.replace(/\D/g, "");
+  const whatsappPhone = phoneDigits.startsWith("0") ? `90${phoneDigits.slice(1)}` : phoneDigits;
+  const instagramHandle = settings.instagram.replace(/^@/, "");
+
   return (
     <section className="booking" id="contact">
       <div className="wrap booking-grid">
         <div className="booking-copy">
           <Reveal direction="down"><Eyebrow>05 &nbsp; / &nbsp; İlk adım</Eyebrow></Reveal>
           <Reveal><h2>Biraz<br />kendine<br /><em>yaklaş.</em></h2></Reveal>
-          <Reveal><p>Tanışmak ve ihtiyaçlarınız üzerine konuşmak için ücretsiz ön görüşme talebi bırakın. En kısa sürede size dönüş yapacağım.</p></Reveal>
+          <Reveal><p>Tanışmak ve ihtiyaçlarınız üzerine konuşmak için iletişime geçebilirsiniz. En kısa sürede size dönüş yapacağım.</p></Reveal>
+          <Reveal className="booking-detail"><strong>Seans süresi</strong>Ortalama 50 dakika</Reveal>
           <Reveal className="booking-detail"><strong>Çalışma saatleri</strong>{settings.hours}</Reveal>
           <Reveal className="booking-detail"><strong>Konum</strong>{settings.address}</Reveal>
+          <Reveal className="booking-contact">
+            <a href={`tel:${settings.phone.replace(/\s/g, "")}`}>Telefon <strong>{settings.phone}</strong></a>
+            <a href={`https://wa.me/${whatsappPhone}`} target="_blank" rel="noreferrer">WhatsApp üzerinden yazın <span aria-hidden="true">↗</span></a>
+            <a href={`mailto:${settings.email}`}>E-posta <strong>{settings.email}</strong></a>
+            <a href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer">Instagram <strong>@{instagramHandle}</strong></a>
+          </Reveal>
         </div>
         <form id="booking-form" className="booking-form reveal" onSubmit={onSubmit}>
           <div className="form-grid">
@@ -207,16 +294,18 @@ function Booking({ services, settings, onSubmit }) {
 }
 
 function Footer({ settings }) {
+  const instagramHandle = settings.instagram.replace(/^@/, "");
+
   return (
     <footer className="footer"><div className="wrap">
       <div className="footer-main">
         <Brand footer />
         <div className="footer-nav">
           <div><Eyebrow>Keşfet</Eyebrow><a href="#about">Hakkımda</a><a href="#services">Çalışma alanlarım</a><a href="#journal">Journal</a></div>
-          <div><Eyebrow>İletişim</Eyebrow><a href={`mailto:${settings.email}`}>{settings.email}</a><a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a><a href="#contact">{settings.instagram}</a></div>
+          <div><Eyebrow>İletişim</Eyebrow><a href={`mailto:${settings.email}`}>{settings.email}</a><a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a><a href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer">@{instagramHandle}</a></div>
         </div>
       </div>
-      <div className="footer-bottom"><span>© {new Date().getFullYear()} Buse Çoşkun. Tüm hakları saklıdır.</span><a href="#admin">Yönetici girişi ↗</a></div>
+      <div className="footer-bottom"><span>© {new Date().getFullYear()} Buse Coşkun. Tüm hakları saklıdır.</span><a href="#admin">Yönetici girişi ↗</a></div>
     </div></footer>
   );
 }
@@ -259,7 +348,7 @@ function Site({ data, setAppointments, notify }) {
       <Header />
       <main>
         <Hero /><Marquee /><Intro />
-        <Services services={data.services} />
+        <Services services={data.services} /><FocusAreas />
         <section className="quote-band"><div className="wrap quote-inner reveal"><div className="quote-mark">“</div><blockquote>Her şey, kendine<br />kulak vermekle başlar.</blockquote><cite>Kendinle kurduğun ilişki, her şeyin başlangıcı.</cite></div></section>
         <About /><Journal posts={data.posts} /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
       </main>
@@ -280,7 +369,7 @@ function AdminLogin({ onLogin, notify }) {
       <section className="admin-login-aside">
         <Brand />
         <div><Eyebrow>Yönetim paneli</Eyebrow><h1>Her şey<br />kontrolünüzde.</h1><p>İçeriklerinizi, görüşme taleplerinizi ve site bilgilerinizi tek bir yerden yönetin.</p></div>
-        <Eyebrow>© {new Date().getFullYear()} Buse Çoşkun</Eyebrow>
+        <Eyebrow>© {new Date().getFullYear()} Buse Coşkun</Eyebrow>
       </section>
       <section className="admin-login-main"><form id="login-form" className="login-box" onSubmit={submit}>
         <Brand /><h2>Tekrar merhaba.</h2><p>Devam etmek için yönetici hesabınıza giriş yapın.</p>
@@ -368,7 +457,7 @@ function Dashboard({ data, setData, onLogout, notify }) {
     <div className="field"><label htmlFor="set-phone">Telefon</label><input id="set-phone" name="phone" required defaultValue={data.settings.phone} /></div>
     <div className="field full"><label htmlFor="set-address">Konum / görüşme bilgisi</label><input id="set-address" name="address" required defaultValue={data.settings.address} /></div>
     <div className="field full"><label htmlFor="set-hours">Çalışma saatleri</label><input id="set-hours" name="hours" required defaultValue={data.settings.hours} /></div>
-    <div className="field full"><label htmlFor="set-social">Instagram / sosyal medya</label><input id="set-social" name="instagram" defaultValue={data.settings.instagram} /></div>
+    <div className="field full"><label htmlFor="set-social">Instagram kullanıcı adı</label><input id="set-social" name="instagram" defaultValue={data.settings.instagram} /></div>
     <div className="admin-actions"><button className="admin-btn">Değişiklikleri kaydet</button></div>
   </form></section>;
 
@@ -411,7 +500,7 @@ export default function App() {
   }, [isAdmin]);
 
   useEffect(() => {
-    document.title = isAdmin ? "Yönetim Paneli — Buse Çoşkun" : "Buse Çoşkun — Psikolog & Psikoterapist";
+    document.title = isAdmin ? "Yönetim Paneli — Buse Coşkun" : "Uzman Klinik Psikolog Buse Coşkun";
   }, [isAdmin]);
 
   useEffect(() => {
