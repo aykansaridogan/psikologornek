@@ -158,25 +158,6 @@ function Hero() {
   );
 }
 
-function Services({ services }) {
-  return (
-    <section className="section wrap" id="services">
-      <div className="section-head">
-        <div><Reveal direction="down"><Eyebrow>01 &nbsp; / &nbsp; Danışmanlık ve çalışmalar</Eyebrow></Reveal><Reveal><h2 className="section-title">Birlikte<br />çalışalım.</h2></Reveal></div>
-        <Reveal direction="down"><p className="section-subtitle">İhtiyacına ve yaşam ritmine göre, sana özel bir alan.</p></Reveal>
-      </div>
-      <div className="services">
-        {services.map((service, index) => (
-          <article className={`service-card reveal reveal-${index % 2 ? "down" : "up"}`} key={service.id}>
-            <div className="service-top"><span className="service-index">0{index + 1} &nbsp; / &nbsp; 0{services.length}</span><span className="service-icon">{service.icon || "○"}</span></div>
-            <div><h3>{service.title}</h3><p>{service.description}</p><div className="service-bottom"><span>{service.price}</span><a href="#contact" aria-label="Randevu al">↗</a></div></div>
-          </article>
-        ))}
-      </div>
-    </section>
-  );
-}
-
 function FocusAreas() {
   const areas = [
     {
@@ -421,7 +402,7 @@ function FrequentlyAskedQuestions() {
   );
 }
 
-function Booking({ services, settings, onSubmit }) {
+function Booking({ settings, onSubmit }) {
   const phoneDigits = settings.phone.replace(/\D/g, "");
   const whatsappPhone = phoneDigits.startsWith("0") ? `90${phoneDigits.slice(1)}` : phoneDigits;
   const instagramHandle = settings.instagram.replace(/^@/, "");
@@ -452,7 +433,6 @@ function Booking({ services, settings, onSubmit }) {
             <div className="field"><label htmlFor="name">Adınız soyadınız</label><input id="name" name="name" required autoComplete="name" placeholder="Adınız Soyadınız" /></div>
             <div className="field"><label htmlFor="email">E-posta adresiniz</label><input id="email" name="email" type="email" required autoComplete="email" placeholder="ornek@email.com" /></div>
             <div className="field"><label htmlFor="phone">Telefon numaranız</label><input id="phone" name="phone" type="tel" required autoComplete="tel" placeholder="+90 5XX XXX XX XX" /></div>
-            <div className="field"><label htmlFor="service">Görüşme tercihiniz</label><select id="service" name="service" required defaultValue=""><option value="" disabled>Bir seçenek belirleyin</option>{services.map(service => <option key={service.id} value={service.title}>{service.title}</option>)}</select></div>
             <div className="field full"><label htmlFor="message">Paylaşmak istedikleriniz <span style={{ letterSpacing: 0, textTransform: "none" }}>(isteğe bağlı)</span></label><textarea id="message" name="message" placeholder="Kısaca not bırakabilirsiniz..." /></div>
           </div>
           <button className="pill dark" type="submit">Görüşme talep et <span className="arrow">↗</span></button>
@@ -489,6 +469,17 @@ function Site({ data, setAppointments, notify }) {
       scrollDirection = currentScrollY >= lastScrollY ? "down" : "up";
       lastScrollY = currentScrollY;
     };
+    const handleInternalNavigation = event => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link || link.getAttribute("href") === "#") return;
+
+      const target = document.getElementById(decodeURIComponent(link.hash.slice(1)));
+      if (!target) return;
+
+      event.preventDefault();
+      window.history.replaceState(window.history.state, "", `${window.location.pathname}${window.location.search}`);
+      target.scrollIntoView({ behavior: "smooth" });
+    };
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -501,6 +492,7 @@ function Site({ data, setAppointments, notify }) {
       });
     }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
     window.addEventListener("scroll", updateScrollDirection, { passive: true });
+    document.addEventListener("click", handleInternalNavigation);
     document.querySelectorAll(".reveal").forEach(element => {
       observer.observe(element);
       if (element.getBoundingClientRect().top < window.innerHeight * 0.92) element.classList.add("is-visible");
@@ -508,6 +500,7 @@ function Site({ data, setAppointments, notify }) {
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", updateScrollDirection);
+      document.removeEventListener("click", handleInternalNavigation);
     };
   }, [data.services, data.posts]);
 
@@ -520,7 +513,7 @@ function Site({ data, setAppointments, notify }) {
       name: fields.get("name").trim(),
       email: fields.get("email").trim(),
       phone: fields.get("phone").trim(),
-      service: fields.get("service"),
+      service: "Belirtilmedi",
       message: fields.get("message").trim(),
       date: new Date().toLocaleDateString("tr-TR"),
       status: "Beklemede",
@@ -535,9 +528,9 @@ function Site({ data, setAppointments, notify }) {
       <Header />
       <main>
         <Hero /><Marquee />
-        <Services services={data.services} /><FocusAreas />
+        <FocusAreas />
         <section className="quote-band"><div className="wrap quote-inner reveal"><div className="quote-mark">“</div><blockquote>Her şey, kendine<br />kulak vermekle başlar.</blockquote><cite>Kendinle kurduğun ilişki, her şeyin başlangıcı.</cite></div></section>
-        <About /><CounselingProcess /><FrequentlyAskedQuestions /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
+        <About /><CounselingProcess /><FrequentlyAskedQuestions /><Booking settings={data.settings} onSubmit={submitAppointment} />
       </main>
       <Footer settings={data.settings} />
     </>
