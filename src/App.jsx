@@ -111,7 +111,6 @@ function Header() {
         <nav className={`nav-links${menuOpen ? " open" : ""}`} id="nav-links">
           <a href="#about" onClick={() => setMenuOpen(false)}>Hakkımda</a>
           <a href="#focus" onClick={() => setMenuOpen(false)}>Uzmanlık alanlarım</a>
-          <a href="#journal" onClick={() => setMenuOpen(false)}>Journal</a>
           <a href="#contact" onClick={() => setMenuOpen(false)}>İletişim</a>
         </nav>
         <div className="nav-right">
@@ -146,28 +145,11 @@ function Hero() {
   );
 }
 
-function Intro() {
-  return (
-    <section className="intro">
-      <div className="wrap intro-grid">
-        <Reveal direction="down"><Eyebrow>01 &nbsp; / &nbsp; Yaklaşım</Eyebrow></Reveal>
-        <div className="intro-copy">
-          <Reveal><h2>Kendine dönmek, her şeyi <em>değiştirebilir.</em></h2></Reveal>
-          <div className="intro-bottom">
-            <Reveal direction="down"><p>Terapi; hazır cevaplar değil, kendini duyabileceğin bir alan. Yargısızca, birlikte ve senin hızında ilerleyen bir yolculuk.</p></Reveal>
-            <Reveal direction="down"><a className="pill" href="#about">Nasıl çalışıyorum? <span className="arrow">↗</span></a></Reveal>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Services({ services }) {
   return (
     <section className="section wrap" id="services">
       <div className="section-head">
-        <div><Reveal direction="down"><Eyebrow>02 &nbsp; / &nbsp; Yan yana</Eyebrow></Reveal><Reveal><h2 className="section-title">Birlikte<br />çalışalım.</h2></Reveal></div>
+        <div><Reveal direction="down"><Eyebrow>01 &nbsp; / &nbsp; Terapi ve çalışmalar</Eyebrow></Reveal><Reveal><h2 className="section-title">Birlikte<br />çalışalım.</h2></Reveal></div>
         <Reveal direction="down"><p className="section-subtitle">İhtiyacına ve yaşam ritmine göre, sana özel bir alan.</p></Reveal>
       </div>
       <div className="services">
@@ -184,72 +166,136 @@ function Services({ services }) {
 
 function FocusAreas() {
   const areas = [
-    "Travmatik yaşantılar ve travma sonrası stres",
-    "Anksiyete ve kaygı bozuklukları",
-    "Depresyon ve duygu durum güçlükleri",
-    "Panik bozukluk ve panik atak",
-    "Duygu düzenleme güçlükleri",
-    "Kişilik örüntüleri ve kişilik bozuklukları",
-    "Ergenlik dönemine uyum ve kimlik gelişimi",
-    "Sınav kaygısı ve akademik stres",
-    "Akran ilişkileri ve sosyal uyum sorunları",
-    "Aile içi iletişim ve çatışmalar",
-    "Özsaygı ve benlik algısı",
-    "İlişki ve kişilerarası iletişim sorunları",
+    {
+      icon: "◎",
+      title: "Bireysel Psikoterapi",
+      tags: ["Ergen", "Yetişkin", "BDT", "EMDR", "Sanat Terapisi"],
+      description: "Ergen ve yetişkinlerle bireysel psikoterapi; kişisel ihtiyaçlara ve kişinin kendi hızına duyarlı çalışma.",
+      tone: "sage",
+    },
+    {
+      icon: "✳",
+      title: "Travma ve EMDR",
+      tags: ["Travmatik yaşantılar ve travma sonrası stres"],
+      description: "Travmatik yaşantılar ve sonrasındaki etkiler üzerine destekleyici psikoterapi çalışmaları.",
+      tone: "rose",
+    },
+    {
+      icon: "⌁",
+      title: "Kaygı ve Duygu Durumu",
+      tags: ["Anksiyete ve kaygı bozuklukları", "Depresyon ve duygu durum güçlükleri", "Panik bozukluk ve panik atak", "Duygu düzenleme güçlükleri"],
+      description: "Kaygı, panik, depresif duygu durum ve duyguları düzenlemekte yaşanan güçlükler.",
+      tone: "blue",
+    },
+    {
+      icon: "◇",
+      title: "Ergenlik ve Gelişim",
+      tags: ["Ergenlik dönemine uyum ve kimlik gelişimi", "Sınav kaygısı ve akademik stres", "Akran ilişkileri ve sosyal uyum sorunları"],
+      description: "Ergenlik dönemine uyum, akademik stres ve sosyal ilişkiler üzerine çalışmalar.",
+      tone: "mint",
+    },
+    {
+      icon: "♡",
+      title: "İlişkiler ve Benlik",
+      tags: ["Kişilik örüntüleri ve kişilik bozuklukları", "Aile içi iletişim ve çatışmalar", "Özsaygı ve benlik algısı", "İlişki ve kişilerarası iletişim sorunları"],
+      description: "Aile içi iletişim, kişilerarası ilişkiler ve benlik algısına yönelik psikoterapi.",
+      tone: "lilac",
+    },
   ];
 
   return (
     <section className="focus-section" id="focus">
-      <div className="wrap focus-grid">
-        <div className="focus-intro">
-          <Eyebrow>Çalışma alanlarım</Eyebrow>
-          <h2>Farklı yaşam deneyimlerine <em>birlikte</em> bakalım.</h2>
-          <p>Ergen ve yetişkinlerle, kişinin ihtiyaçlarına ve kendi hikâyesine duyarlı bir yaklaşımla çalışıyorum.</p>
+      <div className="focus-wrap">
+        <div className="focus-heading">
+          <Eyebrow>02 &nbsp; / &nbsp; Uzmanlık alanları</Eyebrow>
+          <h2>Size Özel Psikolojik Destek</h2>
+          <p>Her bireyin ihtiyaçları farklıdır. Ergen ve yetişkinlerle bilimsel temele dayalı, kişiye özel psikoterapi çalışmaları yürütüyorum.</p>
         </div>
-        <ul className="focus-list">{areas.map(area => <li key={area}>{area}</li>)}</ul>
+        <div className="focus-list">{areas.map(area => (
+          <article className={`focus-card focus-card-${area.tone}`} key={area.title}>
+            <span className="focus-card-icon" aria-hidden="true">{area.icon}</span>
+            <h3>{area.title}</h3>
+            <ul>{area.tags.map(tag => <li key={tag}>{tag}</li>)}</ul>
+            <p>{area.description}</p>
+          </article>
+        ))}</div>
       </div>
     </section>
   );
 }
 
 function About() {
-  return (
-    <section className="section wrap" id="about">
-      <div className="about-grid">
-        <Reveal direction="down" className="about-photo" role="img" aria-label="Uzman Klinik Psikolog Buse Coşkun portresi" />
-        <div className="about-copy">
-          <Reveal direction="down"><Eyebrow>03 &nbsp; / &nbsp; Merhaba, ben Buse</Eyebrow></Reveal>
-          <Reveal direction="down"><h2>Uzman Klinik Psikolog <em>Buse Coşkun.</em></h2></Reveal>
-          <Reveal><p>Üsküdar Üniversitesi Psikoloji Bölümü’nden mezun olduktan sonra aynı üniversitede Klinik Psikoloji yüksek lisans eğitimimi tamamladım. Mesleki çalışmalarımı Bilişsel Davranışçı Terapi (BDT), EMDR ve Sanat Terapisi alanlarında sürdürerek farklı terapi yaklaşımlarını mesleki pratiğime dahil ediyorum.</p></Reveal>
-          <Reveal><p>Ergen ve yetişkinlerle bireysel psikoterapi çalışmalarının yanı sıra sanat terapisi temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.</p></Reveal>
-          <Reveal><p>Terapi sürecini, bireyin kendisini tanımasına, yaşantılarına farklı bir perspektiften bakabilmesine ve kendi içsel kaynaklarını keşfedebilmesine alan açan bir yolculuk olarak görüyorum. Her bireyin kendine özgü hikâyesine saygı duymayı, bilimsel ve etik ilkeler doğrultusunda güvene dayalı bir ilişki kurmayı önemsiyorum.</p></Reveal>
-          <Reveal className="credentials"><div className="credential"><strong>Üsküdar Üniversitesi</strong>Psikoloji lisans</div><div className="credential"><strong>Klinik Psikoloji</strong>Yüksek lisans</div></Reveal>
-          <Reveal className="approach-values">
-            <strong>Çalışma ilkelerim</strong>
-            <ul>{["Gizlilik ve mahremiyet", "Yargısız ve güvenli alan", "Bilimsel ve etik yaklaşım", "Bireysel farklılıklara saygı", "Güven temelli terapi ilişkisi"].map(value => <li key={value}>{value}</li>)}</ul>
-          </Reveal>
-          <Reveal><a className="text-link" href="#contact">Birlikte çalışalım ↗</a></Reveal>
-        </div>
-      </div>
-    </section>
-  );
-}
+  const areas = [
+    "Travmatik yaşantılar ve travma sonrası stres",
+    "Anksiyete ve kaygı bozuklukları",
+    "Depresyon ve duygu durum güçlükleri",
+    "Panik bozukluk ve panik atak",
+    "Duygu düzenleme güçlükleri",
+    "Kişilik örüntüleri ve kişilik bozuklukları",
+    "Ergenlik dönemi ve kimlik gelişimi",
+    "Sınav kaygısı ve akademik stres",
+    "Akran ilişkileri ve sosyal uyum",
+    "Aile içi iletişim ve çatışmalar",
+    "Özsaygı ve benlik algısı",
+    "İlişki ve kişilerarası iletişim",
+  ];
+  const principles = [
+    "Gizlilik ve mahremiyet",
+    "Yargısız ve güvenli alan",
+    "Bilimsel ve etik yaklaşım",
+    "Bireysel farklılıklara saygı",
+    "Güven temelli ilişki",
+  ];
 
-function Journal({ posts }) {
   return (
-    <section className="section journal" id="journal">
-      <div className="wrap">
-        <div className="section-head">
-          <div><Reveal direction="down"><Eyebrow>04 &nbsp; / &nbsp; Düşünceler</Eyebrow></Reveal><Reveal><h2 className="section-title">Aklımdan<br />geçenler.</h2></Reveal></div>
-          <Reveal direction="down"><p className="section-subtitle">Kendimize, duygularımıza ve ilişkilerimize dair küçük notlar.</p></Reveal>
+    <section className="about-section" id="about">
+      <div className="wrap about-wrap">
+        <header className="about-heading about-heading-centered">
+          <Reveal direction="down"><Eyebrow>✳ &nbsp; Hakkımda &amp; mesleki yaklaşım</Eyebrow></Reveal>
+          <Reveal><h2>İçsel yolculuğunuzda <em>güvenli</em> bir alan.</h2></Reveal>
+          <Reveal><p>Uzman Klinik Psikolog Buse Coşkun olarak, ergen ve yetişkinlerin ihtiyaçlarını bilimsel ve etik ilkeler doğrultusunda ele alıyorum.</p></Reveal>
+        </header>
+        <div className="about-layout">
+          <aside className="about-sidebar">
+            <Reveal className="about-summary-card">
+              <div className="about-summary-top">
+                <div className="about-avatar" role="img" aria-label="Psikolog portre fotoğrafı" />
+                <div className="about-summary-name">
+                  <span>Uzman Klinik Psikolog</span>
+                  <h3>Buse Coşkun</h3>
+                  <small>Klinik Psikoloji Yüksek Lisans</small>
+                </div>
+                <div className="about-badges"><span>İstanbul · Suadiye</span><span>Yüz yüze &amp; Online</span></div>
+              </div>
+              <div className="about-education">
+                <Eyebrow>Eğitim geçmişi</Eyebrow>
+                <div className="education-card"><span>01</span><div><strong>Üsküdar Üniversitesi</strong><small>Psikoloji Bölümü · Lisans</small></div></div>
+                <div className="education-card"><span>02</span><div><strong>Üsküdar Üniversitesi</strong><small>Klinik Psikoloji · Yüksek lisans</small></div></div>
+              </div>
+              <div className="about-methods">
+                <Eyebrow>Terapi yaklaşımları</Eyebrow>
+                <ul>{["BDT", "EMDR", "Sanat Terapisi"].map(approach => <li key={approach}>{approach}</li>)}</ul>
+              </div>
+            </Reveal>
+          </aside>
+          <Reveal className="about-main-card">
+            <div className="about-bio">
+              <Eyebrow>Mesleki profil ve klinik yaklaşım</Eyebrow>
+              <p>Üsküdar Üniversitesi Psikoloji Bölümü’nden mezun olduktan sonra aynı üniversitede Klinik Psikoloji yüksek lisans eğitimimi tamamladım. Mesleki çalışmalarımı Bilişsel Davranışçı Terapi (BDT), EMDR ve Sanat Terapisi alanlarında sürdürerek farklı terapi yaklaşımlarını mesleki pratiğime dahil ediyorum.</p>
+              <p>Ergen ve yetişkinlerle bireysel psikoterapi çalışmalarının yanı sıra sanat terapisi temelli grup çalışmaları ve yaratıcı atölyeler gerçekleştiriyorum.</p>
+              <p>Terapi sürecini; bireyin kendisini tanımasına, yaşantılarına farklı bir perspektiften bakabilmesine ve kendi içsel kaynaklarını keşfedebilmesine alan açan bir yolculuk olarak görüyorum. Her bireyin kendine özgü hikâyesine saygı duymayı, bilimsel ve etik ilkeler doğrultusunda güvene dayalı bir ilişki kurmayı önemsiyorum.</p>
+            </div>
+            <div className="about-topic-group">
+              <Eyebrow>Çalışma alanları</Eyebrow>
+              <ul>{areas.map(area => <li key={area}>{area}</li>)}</ul>
+            </div>
+            <div className="about-principle-group">
+              <Eyebrow>Çalışma ilkeleri</Eyebrow>
+              <ul>{principles.map(principle => <li key={principle}>{principle}</li>)}</ul>
+            </div>
+          </Reveal>
         </div>
-        <div className="journal-grid">{posts.map(post => (
-          <article className="article reveal" key={post.id}>
-            <div className="article-image" role="img" aria-label="Doğadan bir manzara" />
-            <div className="article-meta"><span>{post.category}</span><span>{post.date}</span></div>
-            <h3>{post.title}</h3><p>{post.excerpt}</p><a href="#contact">Yazıyı keşfet ↗</a>
-          </article>
-        ))}</div>
+        <Reveal className="about-cta"><a className="text-link" href="#contact">Birlikte çalışalım <span aria-hidden="true">↗</span></a></Reveal>
       </div>
     </section>
   );
@@ -264,20 +310,24 @@ function Booking({ services, settings, onSubmit }) {
     <section className="booking" id="contact">
       <div className="wrap booking-grid">
         <div className="booking-copy">
-          <Reveal direction="down"><Eyebrow>05 &nbsp; / &nbsp; İlk adım</Eyebrow></Reveal>
-          <Reveal><h2>Biraz<br />kendine<br /><em>yaklaş.</em></h2></Reveal>
-          <Reveal><p>Tanışmak ve ihtiyaçlarınız üzerine konuşmak için iletişime geçebilirsiniz. En kısa sürede size dönüş yapacağım.</p></Reveal>
-          <Reveal className="booking-detail"><strong>Seans süresi</strong>Ortalama 50 dakika</Reveal>
-          <Reveal className="booking-detail"><strong>Çalışma saatleri</strong>{settings.hours}</Reveal>
-          <Reveal className="booking-detail"><strong>Konum</strong>{settings.address}</Reveal>
-          <Reveal className="booking-contact">
-            <a href={`tel:${settings.phone.replace(/\s/g, "")}`}>Telefon <strong>{settings.phone}</strong></a>
-            <a href={`https://wa.me/${whatsappPhone}`} target="_blank" rel="noreferrer">WhatsApp üzerinden yazın <span aria-hidden="true">↗</span></a>
-            <a href={`mailto:${settings.email}`}>E-posta <strong>{settings.email}</strong></a>
-            <a href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer">Instagram <strong>@{instagramHandle}</strong></a>
+          <Reveal direction="down"><Eyebrow>İletişim &nbsp;·&nbsp; Suadiye, İstanbul</Eyebrow></Reveal>
+          <Reveal><h2>Birlikte<br />başlayalım.</h2></Reveal>
+          <Reveal><p>Terapi süreci ve çalışma biçimim hakkında bilgi almak ya da randevu oluşturmak için bana ulaşabilirsiniz.</p></Reveal>
+          <Reveal className="contact-facts">
+            <div><span>Seans süresi</span><strong>Ortalama 50 dakika</strong></div>
+            <div><span>Görüşme biçimi</span><strong>Yüz yüze · Online</strong></div>
+            <div><span>Çalışma saatleri</span><strong>{settings.hours}</strong></div>
+            <div><span>Konum</span><strong>{settings.address}</strong></div>
+          </Reveal>
+          <Reveal className="contact-links">
+            <a className="contact-link" href={`tel:${settings.phone.replace(/\s/g, "")}`}><span className="contact-link-icon" aria-hidden="true">↗</span><span><small>Telefon</small><strong>{settings.phone}</strong></span></a>
+            <a className="contact-link" href={`https://wa.me/${whatsappPhone}`} target="_blank" rel="noreferrer"><span className="contact-link-icon" aria-hidden="true">↗</span><span><small>WhatsApp</small><strong>Mesaj gönder</strong></span></a>
+            <a className="contact-link" href={`mailto:${settings.email}`}><span className="contact-link-icon" aria-hidden="true">↗</span><span><small>E-posta</small><strong>{settings.email}</strong></span></a>
+            <a className="contact-link" href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer"><span className="contact-link-icon" aria-hidden="true">↗</span><span><small>Instagram</small><strong>@{instagramHandle}</strong></span></a>
           </Reveal>
         </div>
-        <form id="booking-form" className="booking-form reveal" onSubmit={onSubmit}>
+        <form id="booking-form" className="booking-form contact-form reveal" onSubmit={onSubmit}>
+          <div className="contact-form-heading"><Eyebrow>Randevu talebi</Eyebrow><h3>Size geri dönelim.</h3><p>Bilgilerinizi bırakın, en kısa sürede sizinle iletişime geçeyim.</p></div>
           <div className="form-grid">
             <div className="field"><label htmlFor="name">Adınız soyadınız</label><input id="name" name="name" required autoComplete="name" placeholder="Adınız Soyadınız" /></div>
             <div className="field"><label htmlFor="email">E-posta adresiniz</label><input id="email" name="email" type="email" required autoComplete="email" placeholder="ornek@email.com" /></div>
@@ -301,7 +351,7 @@ function Footer({ settings }) {
       <div className="footer-main">
         <Brand footer />
         <div className="footer-nav">
-          <div><Eyebrow>Keşfet</Eyebrow><a href="#about">Hakkımda</a><a href="#services">Çalışma alanlarım</a><a href="#journal">Journal</a></div>
+          <div><Eyebrow>Keşfet</Eyebrow><a href="#about">Hakkımda</a><a href="#services">Çalışma alanlarım</a><a href="#focus">Uzmanlık alanlarım</a></div>
           <div><Eyebrow>İletişim</Eyebrow><a href={`mailto:${settings.email}`}>{settings.email}</a><a href={`tel:${settings.phone.replace(/\s/g, "")}`}>{settings.phone}</a><a href={`https://www.instagram.com/${instagramHandle}/`} target="_blank" rel="noreferrer">@{instagramHandle}</a></div>
         </div>
       </div>
@@ -347,10 +397,10 @@ function Site({ data, setAppointments, notify }) {
     <>
       <Header />
       <main>
-        <Hero /><Marquee /><Intro />
+        <Hero /><Marquee />
         <Services services={data.services} /><FocusAreas />
         <section className="quote-band"><div className="wrap quote-inner reveal"><div className="quote-mark">“</div><blockquote>Her şey, kendine<br />kulak vermekle başlar.</blockquote><cite>Kendinle kurduğun ilişki, her şeyin başlangıcı.</cite></div></section>
-        <About /><Journal posts={data.posts} /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
+        <About /><Booking services={data.services} settings={data.settings} onSubmit={submitAppointment} />
       </main>
       <Footer settings={data.settings} />
     </>

@@ -17,10 +17,10 @@
   
 
     
-:root{--canvas:#fffaf0;--type:#332d37;--soft-type:#68616a;--lavender:#e9e3f5;--violet:#715b9b;--coral:#e9836a;--butter:#f5dc82;--mint:#dce9dc;--sky:#dce8f1;--display:'Cormorant Garamond',Georgia,serif}
+:root{--canvas:#F2E6B1;--type:#332d37;--soft-type:#68616a;--lavender:#F2E6B1;--violet:#715b42;--coral:#b67b50;--butter:#F2E6B1;--mint:#f6f0d7;--sky:#eee6c7;--display:'Cormorant Garamond',Georgia,serif}
     body.site-page{background:var(--canvas);color:var(--type);font-family:'DM Sans',Arial,sans-serif}
     body.site-page .wrap{width:min(1320px,calc(100% - 112px))}
-    body.site-page .site-header{position:fixed;inset:0 0 auto;background:rgba(255,250,240,.9);border:0;box-shadow:0 1px 0 #332d3710;backdrop-filter:blur(16px);color:var(--type)}
+    body.site-page .site-header{position:fixed;inset:0 0 auto;background:var(--canvas);border:0;box-shadow:0 1px 0 #332d3710;backdrop-filter:blur(16px);color:var(--type)}
     body.site-page .nav{height:82px}
     body.site-page .brand-mark{width:38px;height:38px;border:1px solid var(--violet);border-radius:50%;font:italic 22px var(--display);color:var(--violet)}
     body.site-page .brand-name{font:500 17px var(--display);letter-spacing:.01em}
@@ -124,7 +124,7 @@
     body.site-page .booking .pill.dark{background:var(--violet);border-color:var(--violet);color:white}
     body.site-page .booking .pill.dark:hover{background:var(--coral);border-color:var(--coral)}
     body.site-page .form-note{color:#75696a}
-    body.site-page .footer{background:#ebe5f2;color:var(--type);padding-top:66px}
+    body.site-page .footer{background:var(--canvas);color:var(--type);padding-top:66px;border-top:1px solid #715b4240}
     body.site-page .footer-brand{font:500 34px var(--display);letter-spacing:-.035em}
     body.site-page .footer-brand em{color:var(--violet);font-style:italic}
     body.site-page .footer-nav div{color:#68616a}
@@ -153,14 +153,25 @@
     @media(max-width:680px){body.site-page .wrap{width:calc(100% - 40px)}body.site-page .nav{height:68px}body.site-page .site-header .nav-links{top:68px;left:0;right:0;padding:20px;background:var(--canvas);border-color:#332d3724;box-shadow:0 10px 24px #332d3710}body.site-page .site-header .nav-links a{color:var(--type)}body.site-page .hero{width:100%;padding:108px 20px 43px;grid-template-columns:1fr;gap:25px;min-height:auto}body.site-page .hero:before{width:75vw;right:4%;top:44%;}body.site-page .hero-copy{padding:22px 0 0}body.site-page .hero-kicker{margin-bottom:25px}body.site-page .hero h1{font-size:clamp(80px,18vw,120px);margin-bottom:24px}body.site-page .hero-copy>p{font-size:12px}body.site-page .hero-note{margin-top:27px}body.site-page .hero-image{height:110vw;max-height:480px;min-height:350px;margin:4px 7% 0 4%;background-position:center 27%}body.site-page .hero-stamp{right:-9%;top:7%;width:89px;height:89px;font-size:8px}body.site-page .intro{padding:74px 0 77px}body.site-page .intro-grid{grid-template-columns:1fr;gap:20px}body.site-page .intro-copy h2{font-size:45px}body.site-page .intro-bottom{align-items:start;flex-direction:column;gap:21px}body.site-page .section{padding:77px 0}body.site-page .section-head{gap:16px;margin-bottom:32px}body.site-page .section-title{font-size:clamp(49px,12vw,70px)}body.site-page .services{grid-template-columns:1fr;gap:12px}body.site-page .service-card{min-height:300px;padding:23px}body.site-page .service-card h3{font-size:34px;margin:22px 0 10px}body.site-page .quote-band{padding:72px 0}body.site-page .quote-inner blockquote{font-size:39px}body.site-page .about-grid{grid-template-columns:1fr;gap:34px}body.site-page .about-photo{height:110vw;max-height:460px;margin-right:15px}body.site-page .about-copy h2{font-size:54px}body.site-page .journal-grid{grid-template-columns:1fr;gap:36px}body.site-page .article-image{height:64vw;max-height:320px}body.site-page .article h3{font-size:30px}body.site-page .booking{padding:75px 0}body.site-page .booking-grid{grid-template-columns:1fr;gap:32px}body.site-page .booking-copy h2{font-size:76px}body.site-page .form-grid{gap:18px 13px}body.site-page .footer-main{gap:28px}body.site-page .footer-nav{gap:25px}body.site-page .footer-brand{font-size:29px}}
     @media(prefers-reduced-motion:reduce){body.site-page .hero:before,body.site-page .hero-image,body.site-page .hero-stamp,body.site-page .marquee-track{animation:none!important}body.site-page .reveal{opacity:1;translate:none}}
 
-    body.site-page .focus-section{padding:88px 0;background:var(--butter);color:var(--type)}
-    body.site-page .focus-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:10%;align-items:start}
-    body.site-page .focus-intro .eyebrow{color:#74644a}
-    body.site-page .focus-intro h2{font:500 clamp(38px,4.7vw,62px)/1.02 var(--display);letter-spacing:-.045em;margin:19px 0}
-    body.site-page .focus-intro h2 em{color:var(--violet);font-style:italic}
-    body.site-page .focus-intro p{max-width:380px;color:#61584f;font-size:13px;line-height:1.9}
-    body.site-page .focus-list{display:grid;grid-template-columns:1fr 1fr;gap:0 28px;margin:0;padding:0;list-style:none}
-    body.site-page .focus-list li{padding:14px 0;border-bottom:1px solid #332d3721;color:#514b54;font-size:12px;line-height:1.6}
+    body.site-page .focus-section{padding:82px 56px 94px;background:var(--butter);color:var(--type);border-block:1px solid #80613d20}
+    body.site-page .focus-wrap{width:min(1120px,100%);margin:auto}
+    body.site-page .focus-heading{max-width:760px;margin:0 auto 43px;text-align:center}
+    body.site-page .focus-heading .eyebrow{display:inline-flex;padding:8px 15px;border:1px solid #718c7f35;border-radius:30px;background:#718c7f10;color:#718c7f;font-size:9px;letter-spacing:.12em}
+    body.site-page .focus-heading h2{margin:17px 0 10px;color:#3e5148;font:500 clamp(39px,5vw,62px)/1.04 var(--display);letter-spacing:-.035em}
+    body.site-page .focus-heading p{max-width:540px;margin:0 auto;color:#828780;font-size:12px;line-height:1.8}
+    body.site-page .focus-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;margin:0;padding:0}
+    body.site-page .focus-card{position:relative;min-height:245px;padding:25px 24px 23px;border:1px solid #332d3710;border-top:2px solid var(--focus-accent);border-radius:22px;background:#fff;box-shadow:0 12px 34px #463b250a;transition:transform .25s,box-shadow .25s}
+    body.site-page .focus-card:hover{transform:translateY(-4px);box-shadow:0 17px 36px #463b2515}
+    body.site-page .focus-card-sage{--focus-accent:#789888}
+    body.site-page .focus-card-rose{--focus-accent:#c47d87}
+    body.site-page .focus-card-blue{--focus-accent:#729cb9}
+    body.site-page .focus-card-mint{--focus-accent:#789f83}
+    body.site-page .focus-card-lilac{--focus-accent:#9a83b1}
+    body.site-page .focus-card-icon{width:41px;height:41px;display:grid;place-items:center;margin-bottom:19px;border:1px solid color-mix(in srgb,var(--focus-accent) 22%,white);border-radius:13px;background:color-mix(in srgb,var(--focus-accent) 8%,white);color:var(--focus-accent);font:22px var(--display)}
+    body.site-page .focus-card h3{margin:0 0 11px;color:#332d37;font:600 14px/1.35 'DM Sans',Arial,sans-serif}
+    body.site-page .focus-card ul{display:flex;flex-wrap:wrap;gap:6px 12px;margin:0 0 16px;padding:0;list-style:none}
+    body.site-page .focus-card li{color:var(--focus-accent);font-size:9px;font-weight:600;line-height:1.5}
+    body.site-page .focus-card p{margin:0;color:#7a7c7b;font-size:11px;line-height:1.75}
     body.site-page .approach-values{margin:27px 0 30px;padding:20px 0;border-top:1px solid #332d3721;color:var(--violet);font-size:11px;font-weight:600;letter-spacing:.04em}
     body.site-page .approach-values ul{display:grid;grid-template-columns:1fr 1fr;gap:11px 20px;margin:16px 0 0;padding:0;list-style:none;color:#68616a;font-size:11px;font-weight:400;letter-spacing:0}
     body.site-page .approach-values li:before{content:"✳";margin-right:8px;color:var(--coral)}
@@ -168,11 +179,123 @@
     body.site-page .booking-contact a{display:flex;align-items:baseline;justify-content:space-between;gap:15px;color:#685c5c;font-size:11px}
     body.site-page .booking-contact a:hover{color:var(--violet)}
     body.site-page .booking-contact strong{color:var(--type);font-weight:600}
+    @media(max-width:900px){
+      body.site-page .focus-section{padding:72px 28px 82px}
+      body.site-page .focus-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
     @media(max-width:680px){
-      body.site-page .focus-section{padding:72px 0}
-      body.site-page .focus-grid{grid-template-columns:1fr;gap:24px}
-      body.site-page .focus-list{grid-template-columns:1fr}
+      body.site-page .focus-section{padding:62px 20px 70px}
+      body.site-page .focus-heading{margin-bottom:28px}
+      body.site-page .focus-heading h2{font-size:clamp(37px,10vw,49px)}
+      body.site-page .focus-heading p{font-size:11px}
+      body.site-page .focus-list{grid-template-columns:1fr;gap:12px}
+      body.site-page .focus-card{min-height:0;padding:22px}
       body.site-page .approach-values ul{grid-template-columns:1fr}
       body.site-page .booking-contact a{align-items:flex-start;flex-direction:column;gap:2px}
+    }
+
+    body.site-page .booking{padding:112px 0;background:var(--butter);color:var(--type)}
+    body.site-page .booking-grid{grid-template-columns:1fr 1fr;gap:8%;align-items:center}
+    body.site-page .booking-copy h2{max-width:560px;font:500 clamp(54px,7vw,88px)/.91 var(--display);letter-spacing:-.05em;margin:19px 0 22px}
+    body.site-page .booking-copy h2 em{color:var(--violet);font-style:italic}
+    body.site-page .booking-copy>div>p{max-width:420px;color:#625b4b;font-size:13px;line-height:1.9}
+    body.site-page .contact-facts{display:grid;grid-template-columns:1fr 1fr;gap:17px 26px;margin:32px 0 27px;padding:20px 0;border-top:1px solid #332d3730;border-bottom:1px solid #332d3730}
+    body.site-page .contact-facts div{display:grid;gap:5px}
+    body.site-page .contact-facts span{color:#756d58;font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+    body.site-page .contact-facts strong{font-size:11px;font-weight:500;line-height:1.6}
+    body.site-page .contact-links{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    body.site-page .contact-link{display:flex;align-items:center;gap:12px;min-width:0;padding:13px;background:var(--canvas);border:1px solid #332d3710;transition:transform .2s,border-color .2s}
+    body.site-page .contact-link:hover{transform:translateY(-2px);border-color:#715b4260}
+    body.site-page .contact-link-icon{width:32px;height:32px;flex:none;display:grid;place-items:center;border:1px solid #715b4240;border-radius:50%;color:var(--violet)}
+    body.site-page .contact-link>span:last-child{display:grid;min-width:0;gap:2px}
+    body.site-page .contact-link small{color:#756d58;font-size:8px;letter-spacing:.12em;text-transform:uppercase}
+    body.site-page .contact-link strong{overflow-wrap:anywhere;font-size:10px;font-weight:500}
+    body.site-page .booking-form.contact-form{padding:clamp(25px,4vw,48px);background:#fffdf6;border:1px solid #332d3710;box-shadow:0 20px 60px #66572a12}
+    body.site-page .contact-form-heading{margin-bottom:28px}
+    body.site-page .contact-form-heading .eyebrow{color:var(--violet)}
+    body.site-page .contact-form-heading h3{margin:10px 0 4px;font:500 clamp(32px,4vw,45px)/1 var(--display);letter-spacing:-.025em}
+    body.site-page .contact-form-heading p{margin:0;color:#756d58;font-size:11px;line-height:1.8}
+    body.site-page .contact-form .form-grid{gap:20px 16px}
+    body.site-page .contact-form .field label{color:#665f50;font-size:9px;letter-spacing:.1em}
+    body.site-page .contact-form .field input,body.site-page .contact-form .field textarea,body.site-page .contact-form .field select{padding:11px 0;border:0;border-bottom:1px solid #332d3733;border-radius:0;background:transparent;color:var(--type);font-size:12px}
+    body.site-page .contact-form .field textarea{min-height:74px}
+    body.site-page .contact-form .field input:focus,body.site-page .contact-form .field textarea:focus,body.site-page .contact-form .field select:focus{border-color:var(--violet);outline:none}
+    body.site-page .contact-form .field input::placeholder,body.site-page .contact-form .field textarea::placeholder{color:#9a927f}
+    body.site-page .contact-form .pill.dark{margin-top:24px;background:var(--violet);border-color:var(--violet);color:#fffdf6}
+    body.site-page .contact-form .pill.dark:hover{background:#5c4937;border-color:#5c4937}
+    body.site-page .contact-form .form-note{color:#756d58;font-size:9px}
+    body.site-page .site-header .nav-links{background:var(--canvas)}
+    @media(max-width:900px){
+      body.site-page .booking-grid{gap:5%}
+      body.site-page .contact-link{padding:11px 9px}
+    }
+    @media(max-width:680px){
+      body.site-page .booking{padding:78px 0}
+      body.site-page .booking-grid{grid-template-columns:1fr;gap:31px}
+      body.site-page .booking-copy h2{font-size:clamp(58px,15vw,76px)}
+      body.site-page .contact-facts{gap:15px 12px;margin:23px 0;padding:16px 0}
+      body.site-page .contact-links{gap:8px}
+      body.site-page .contact-link{padding:10px 8px;gap:8px}
+      body.site-page .contact-link-icon{width:28px;height:28px}
+      body.site-page .booking-form.contact-form{padding:24px 18px}
+      body.site-page .contact-form .form-grid{grid-template-columns:1fr;gap:15px}
+      body.site-page .contact-form .field.full{grid-column:auto}
+    }
+
+    body.site-page .about-section{padding:86px 0 94px;background:var(--canvas);color:var(--type)}
+    body.site-page .about-wrap{max-width:1180px}
+    body.site-page .about-heading{max-width:980px;margin:0 auto 42px;text-align:center}
+    body.site-page .about-heading>.reveal:first-child{display:flex;justify-content:center}
+    body.site-page .about-heading .eyebrow{padding:8px 15px;border:1px solid #80613d33;border-radius:30px;background:#80613d09;color:#80613d;font-size:9px;letter-spacing:.12em}
+    body.site-page .about-heading h2{margin:19px 0 12px;font:500 clamp(40px,5.4vw,68px)/1.04 var(--display);letter-spacing:-.035em;color:#45382c}
+    body.site-page .about-heading h2 em{color:#9a7548;font-style:normal}
+    body.site-page .about-heading>div:last-child p{max-width:690px;margin:0 auto;color:#7a7166;font-size:12px;line-height:1.8}
+    body.site-page .about-layout{display:grid;grid-template-columns:.72fr 1.28fr;gap:24px;align-items:start}
+    body.site-page .about-sidebar{min-width:0}
+    body.site-page .about-summary-card,body.site-page .about-main-card{overflow:hidden;border:1px solid #80613d26;border-radius:20px;background:#fffefa;box-shadow:0 14px 36px #463b2510}
+    body.site-page .about-summary-top{display:grid;grid-template-columns:82px 1fr;align-items:center;gap:14px;padding:21px;background:#80613d;color:#fffefa}
+    body.site-page .about-avatar{width:82px;height:94px;border:2px solid #fffefa;border-radius:15px;background:#d3d0c3 url("https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=400&q=85") center 30%/cover}
+    body.site-page .about-summary-name span{color:#f3e8d2;font-size:8px;font-weight:600;letter-spacing:.12em;text-transform:uppercase}
+    body.site-page .about-summary-name h3{margin:5px 0;font:500 25px/1 var(--display)}
+    body.site-page .about-summary-name small{color:#f2e8d8;font-size:9px;line-height:1.5}
+    body.site-page .about-badges{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:7px}
+    body.site-page .about-badges span{padding:6px 9px;border-radius:20px;background:#ffffff25;color:#fffefa;font-size:8px;font-weight:500}
+    body.site-page .about-education{display:grid;gap:9px;padding:19px 18px 16px}
+    body.site-page .about-education>.eyebrow,body.site-page .about-methods>.eyebrow{margin-bottom:2px;color:#8a765c;font-size:8px;letter-spacing:.12em}
+    body.site-page .education-card{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid #80613d1c;border-radius:11px;background:#faf7ef}
+    body.site-page .education-card>span{color:#9a7548;font:italic 15px var(--display)}
+    body.site-page .education-card div{display:grid;gap:4px}
+    body.site-page .education-card strong{font-size:10px;font-weight:600;line-height:1.4}
+    body.site-page .education-card small{color:#7a7166;font-size:8px;line-height:1.5}
+    body.site-page .about-methods{display:grid;gap:9px;margin:0 18px 19px;padding-top:15px;border-top:1px solid #80613d1c}
+    body.site-page .about-methods ul,body.site-page .about-topic-group ul,body.site-page .about-principle-group ul{display:flex;flex-wrap:wrap;gap:7px;margin:0;padding:0;list-style:none}
+    body.site-page .about-methods li,body.site-page .about-topic-group li,body.site-page .about-principle-group li{padding:7px 10px;border:1px solid #80613d26;border-radius:20px;background:#f8f3e7;color:#70583b;font-size:8px;line-height:1.4}
+    body.site-page .about-main-card{display:grid;gap:0;padding:26px 28px}
+    body.site-page .about-bio>.eyebrow,body.site-page .about-topic-group>.eyebrow,body.site-page .about-principle-group>.eyebrow{margin-bottom:13px;color:#8a704e;font-size:8px;letter-spacing:.13em}
+    body.site-page .about-bio p{margin:0 0 13px;color:#6d665c;font-size:11px;line-height:1.85}
+    body.site-page .about-bio p:last-child{margin-bottom:0}
+    body.site-page .about-topic-group,body.site-page .about-principle-group{margin-top:19px;padding-top:16px;border-top:1px solid #80613d1c}
+    body.site-page .about-topic-group li{font-size:8px}
+    body.site-page .about-principle-group li{background:#fffefa;color:#746b5f}
+    body.site-page .about-cta{margin-top:23px;text-align:right}
+    body.site-page .about-cta .text-link{border-color:#80613d;color:#80613d}
+    @media(max-width:900px){
+      body.site-page .about-section{padding:76px 0}
+      body.site-page .about-wrap{width:calc(100% - 56px)}
+      body.site-page .about-layout{grid-template-columns:.8fr 1.2fr;gap:16px}
+      body.site-page .about-main-card{padding:22px}
+      body.site-page .about-summary-top{grid-template-columns:65px 1fr;gap:11px;padding:16px}
+      body.site-page .about-avatar{width:65px;height:78px}
+    }
+    @media(max-width:680px){
+      body.site-page .about-section{padding:64px 0 70px}
+      body.site-page .about-wrap{width:calc(100% - 40px)}
+      body.site-page .about-heading{margin-bottom:27px}
+      body.site-page .about-heading h2{font-size:clamp(38px,10vw,50px)}
+      body.site-page .about-heading>div:last-child p{font-size:11px}
+      body.site-page .about-layout{grid-template-columns:1fr;gap:14px}
+      body.site-page .about-main-card{padding:20px 17px}
+      body.site-page .about-bio p{font-size:11px}
+      body.site-page .about-cta{text-align:center}
     }
   
