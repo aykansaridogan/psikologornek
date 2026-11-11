@@ -399,9 +399,12 @@
     body.site-page .about-avatar{background-image:url("/buse-coskun.jpeg")}
 
     body.site-page{--canvas:#fff0f3;--type:#352f32;--soft-type:#62595d;--lavender:#fff0f3;--violet:#352f32;--coral:#352f32;--butter:#fff0f3;--mint:#fff0f3;--sky:#fff0f3}
-    body.site-page main>section{border-block:1px solid rgba(53,47,50,.28)}
     body.site-page :where(section,header,footer,.marquee,.service-card,.focus-card,.about-summary-card,.about-main-card,.about-summary-top,.education-card,.about-methods li,.about-topic-group li,.about-principle-group li,.contact-link,.contact-form,.hero-stamp,.site-header .nav-links){background-color:#fff0f3!important}
     body.site-page :where(h1,h2,h3,p,blockquote,a,span,li,small,strong,em,cite,label,button,.quote-mark,.eyebrow,.service-index,.service-top,.article-meta,.faq-number,.contact-link-icon,.education-card>span,.process-step-number){color:#352f32!important}
+    body.site-page .marquee{background-color:#fbe8ed!important}
+    body.site-page .marquee{border-block:1px solid #f3dce2}
+    body.site-page .about-summary-card{background-color:#f8e3e9!important;border-color:#efcdd7;box-shadow:0 14px 36px rgba(73,52,60,.06)}
+    body.site-page .about-summary-top{background-color:#f8e3e9!important}
     body.site-page .hero-image .image-caption{color:#fff!important}
     body.site-page .hero:before,body.site-page .hero:after{background:#fff0f3;box-shadow:none}
     body.site-page .pill.dark,body.site-page .contact-form .pill.dark{background:#fff0f3!important;border-color:#352f32;color:#352f32!important}
