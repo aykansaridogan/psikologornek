@@ -145,13 +145,12 @@ function Hero() {
     <section className="wrap hero" id="home">
       <div className="hero-copy">
         <Eyebrow className="hero-kicker">Uzman Klinik Psikolog &nbsp;·&nbsp; İstanbul</Eyebrow>
-        <h1><Reveal direction="down">İçine</Reveal><Reveal>bak.</Reveal><Reveal direction="down">Yer aç.</Reveal></h1>
+        <h1><Reveal direction="down">Kendinle</Reveal><Reveal>temas kur</Reveal></h1>
         <Reveal direction="down"><p>Uzman Klinik Psikolog Buse Coşkun olarak İstanbul Suadiye’de yüz yüze ve online; ergen ve yetişkinlerle psikolojik danışmanlık görüşmeleri yürütüyorum. Çalışmalarımda BDT, EMDR ve sanat temelli yaklaşımlara yer veriyorum.</p></Reveal>
         <Reveal className="hero-actions"><a className="pill dark" href="#contact">Bir adım at <span className="arrow">↗</span></a><a className="text-link" href="#about">Buse kimdir?</a></Reveal>
         <Reveal direction="down" className="hero-note">İnsana ve yaşantıya dair.</Reveal>
       </div>
       <div className="hero-image reveal" role="img" aria-label="Uzman Klinik Psikolog Buse Coşkun portresi">
-        <div className="hero-stamp">Kendine<br />dönmek<br />mümkün ✳</div>
         <div className="image-caption">Buse Coşkun &nbsp; / &nbsp; Uzman Klinik Psikolog</div>
       </div>
     </section>
