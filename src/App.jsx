@@ -68,7 +68,7 @@ function readData(key) {
       if (matchingDefaults) {
         const customServices = saved.filter(service => !matchingDefaults.some(defaultService => (
           service.id === defaultService.id
-            && Object.entries(defaultService).every(([field, value]) => service[field] === value)
+          && Object.entries(defaultService).every(([field, value]) => service[field] === value)
         )));
         const defaultServices = structuredClone(initialData.services);
         return [
