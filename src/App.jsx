@@ -532,7 +532,9 @@ function Site({ data, notify }) {
       if (!response.ok) throw new Error(result.error);
 
       form.reset();
-      notify("Talebiniz e-posta ile gönderildi.");
+      notify(result.emailSent
+        ? "Talebiniz kaydedildi ve e-posta ile gönderildi."
+        : "Talebiniz kaydedildi; e-posta bildirimi gönderilemedi.");
     } catch (error) {
       console.error("Randevu talebi gönderilemedi:", error);
       notify(error instanceof Error ? error.message : "Talep gönderilemedi. Lütfen daha sonra tekrar deneyin.");
@@ -556,11 +558,14 @@ function Site({ data, notify }) {
 }
 
 function AdminLogin({ onLogin, notify }) {
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
     const fields = new FormData(event.currentTarget);
-    if (fields.get("username") === "admin" && fields.get("password") === "buse2026") onLogin();
-    else notify("Kullanıcı adı veya şifre hatalı.");
+    try {
+      await onLogin(String(fields.get("username") || ""), String(fields.get("password") || ""));
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "Giriş yapılamadı. Lütfen tekrar deneyin.");
+    }
   }
   return (
     <main className="admin-view admin-login">
@@ -574,7 +579,6 @@ function AdminLogin({ onLogin, notify }) {
         <div className="field"><label htmlFor="admin-user">Kullanıcı adı</label><input id="admin-user" name="username" autoComplete="username" required placeholder="Kullanıcı adınız" /></div>
         <div className="field"><label htmlFor="admin-pass">Şifre</label><input id="admin-pass" name="password" type="password" autoComplete="current-password" required placeholder="••••••••" /></div>
         <button type="submit" className="pill dark">Giriş yap <span className="arrow">↗</span></button>
-        <div className="login-hint">Demo giriş bilgileri: <strong>admin</strong> / <strong>buse2026</strong><br />Bu demo kimlik doğrulaması yalnızca tarayıcıda çalışır.</div>
       </form></section>
     </main>
   );
@@ -633,15 +637,34 @@ function Dashboard({ data, setData, onLogout, notify }) {
   const [editor, setEditor] = useState(null);
   const tabs = [["overview", "⌂", "Genel Bakış"], ["appointments", "▤", "Randevu Talepleri"], ["services", "✳", "Çalışma Alanları"], ["posts", "▧", "Journal Yazıları"], ["settings", "⚙", "Site Ayarları"]];
   const pending = data.appointments.filter(item => item.status === "Beklemede").length;
-  const remove = (key, itemId) => {
-    if (window.confirm("Bu kaydı silmek istediğinizden emin misiniz?")) setData(key, items => items.filter(item => item.id !== itemId));
-  };
-  const saveContent = item => {
+  async function saveData(key, updater, message) {
+    try {
+      await setData(key, updater);
+      notify(message);
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "Değişiklik kaydedilemedi.");
+    }
+  }
+  async function remove(key, itemId) {
+    if (window.confirm("Bu kaydı silmek istediğinizden emin misiniz?")) {
+      await saveData(key, items => items.filter(item => item.id !== itemId), "Kayıt silindi.");
+    }
+  }
+  async function saveContent(item) {
     const key = editor.type === "service" ? "services" : "posts";
-    setData(key, items => editor.item ? items.map(existing => existing.id === item.id ? item : existing) : [...items, item]);
-    setEditor(null);
-    notify("İçerik kaydedildi.");
-  };
+    try {
+      await setData(key, items => editor.item ? items.map(existing => existing.id === item.id ? item : existing) : [...items, item]);
+      setEditor(null);
+      notify("İçerik kaydedildi.");
+    } catch (error) {
+      notify(error instanceof Error ? error.message : "İçerik kaydedilemedi.");
+    }
+  }
+  async function saveSettings(event) {
+    event.preventDefault();
+    const settings = Object.fromEntries(new FormData(event.currentTarget));
+    await saveData("settings", settings, "Site bilgileri kaydedildi.");
+  }
   let content;
   if (tab === "overview") content = <>
     <div className="stat-grid"><div className="stat-card"><span>Toplam randevu</span><strong>{data.appointments.length}</strong></div><div className="stat-card"><span>Yeni talepler</span><strong>{pending}</strong></div><div className="stat-card"><span>Yayındaki içerik</span><strong>{data.services.length + data.posts.length}</strong></div></div>
@@ -650,7 +673,7 @@ function Dashboard({ data, setData, onLogout, notify }) {
   if (tab === "appointments") content = <section className="admin-content"><div className="content-head"><h2>Randevu talepleri <span style={{ color: "#88948a", font: "13px var(--sans)" }}>({data.appointments.length})</span></h2></div><AppointmentsTable appointments={data.appointments} onStatus={updateStatus} onDelete={itemId => remove("appointments", itemId)} /></section>;
   if (tab === "services") content = <section className="admin-content"><div className="content-head"><h2>Çalışma alanları</h2><button className="admin-btn" onClick={() => setEditor({ type: "service", item: null })}>+ Yeni alan</button></div><ContentTable items={data.services} type="service" onEdit={item => setEditor({ type: "service", item })} onDelete={itemId => remove("services", itemId)} /></section>;
   if (tab === "posts") content = <section className="admin-content"><div className="content-head"><h2>Journal yazıları</h2><button className="admin-btn" onClick={() => setEditor({ type: "post", item: null })}>+ Yeni yazı</button></div><ContentTable items={data.posts} type="post" onEdit={item => setEditor({ type: "post", item })} onDelete={itemId => remove("posts", itemId)} /></section>;
-  if (tab === "settings") content = <section className="admin-content settings-form"><div className="content-head"><h2>İletişim &amp; site bilgileri</h2></div><form className="admin-form" onSubmit={event => { event.preventDefault(); setData("settings", Object.fromEntries(new FormData(event.currentTarget))); notify("Site bilgileri kaydedildi."); }}>
+  if (tab === "settings") content = <section className="admin-content settings-form"><div className="content-head"><h2>İletişim &amp; site bilgileri</h2></div><form className="admin-form" onSubmit={saveSettings}>
     <div className="field"><label htmlFor="set-email">E-posta</label><input id="set-email" name="email" type="email" required defaultValue={data.settings.email} /></div>
     <div className="field"><label htmlFor="set-phone">Telefon</label><input id="set-phone" name="phone" required defaultValue={data.settings.phone} /></div>
     <div className="field full"><label htmlFor="set-address">Konum / görüşme bilgisi</label><input id="set-address" name="address" required defaultValue={data.settings.address} /></div>
@@ -660,7 +683,7 @@ function Dashboard({ data, setData, onLogout, notify }) {
   </form></section>;
 
   function updateStatus(itemId, status) {
-    setData("appointments", items => items.map(item => item.id === itemId ? { ...item, status } : item));
+    return saveData("appointments", items => items.map(item => item.id === itemId ? { ...item, status } : item), "Randevu durumu kaydedildi.");
   }
 
   return (
@@ -673,12 +696,12 @@ function Dashboard({ data, setData, onLogout, notify }) {
 }
 
 export default function App() {
-  const [services, setServices] = useStoredData("services");
-  const [posts, setPosts] = useStoredData("posts");
-  const [appointments, setAppointments] = useStoredData("appointments");
-  const [settings, setSettings] = useStoredData("settings");
-  const [isAdmin, setIsAdmin] = useState(window.location.hash === "#admin");
-  const [loggedIn, setLoggedIn] = useState(() => sessionStorage.getItem("buse-admin") === "true");
+  const [data, setDataState] = useState(() => structuredClone(initialData));
+  const [isAdmin, setIsAdmin] = useState(() => window.location.hash === "#admin" || window.location.pathname.replace(/\/+$/, "").endsWith("/admin"));
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataError, setDataError] = useState("");
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -691,6 +714,60 @@ export default function App() {
       window.removeEventListener("popstate", route);
     };
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    if (!isAdmin) {
+      setLoggedIn(false);
+      setAuthChecking(false);
+      return () => { active = false; };
+    }
+
+    setAuthChecking(true);
+    fetch("/api/admin/session")
+      .then(async response => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "Yönetici oturumu doğrulanamadı.");
+        if (active) setLoggedIn(result.authenticated);
+      })
+      .catch(error => {
+        if (active) {
+          setLoggedIn(false);
+          if (error instanceof Error && error.message !== "Yönetici girişi gerekli.") setToast(error.message);
+        }
+      })
+      .finally(() => {
+        if (active) setAuthChecking(false);
+      });
+
+    return () => { active = false; };
+  }, [isAdmin]);
+
+  useEffect(() => {
+    let active = true;
+    if (isAdmin && (!loggedIn || authChecking)) {
+      setDataLoading(false);
+      return () => { active = false; };
+    }
+
+    const endpoint = isAdmin ? "/api/admin/data" : "/api/site-data";
+    setDataLoading(true);
+    setDataError("");
+    fetch(endpoint)
+      .then(async response => {
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.error || "İçerikler yüklenemedi.");
+        if (active) setDataState(current => ({ ...current, ...result }));
+      })
+      .catch(error => {
+        if (active) setDataError(error instanceof Error ? error.message : "İçerikler yüklenemedi.");
+      })
+      .finally(() => {
+        if (active) setDataLoading(false);
+      });
+
+    return () => { active = false; };
+  }, [isAdmin, loggedIn, authChecking]);
 
   useEffect(() => {
     document.body.classList.toggle("site-page", !isAdmin);
@@ -708,24 +785,79 @@ export default function App() {
     }
   }, [toast]);
 
-  function setData(key, updater) {
-    const setters = { services: setServices, posts: setPosts, appointments: setAppointments, settings: setSettings };
-    setters[key](updater);
+  async function setData(key, updater) {
+    const current = data[key];
+    const next = typeof updater === "function" ? updater(current) : updater;
+    if (key === "appointments") {
+      const nextById = new Map(next.map(appointment => [appointment.id, appointment]));
+      const currentById = new Map(current.map(appointment => [appointment.id, appointment]));
+      const deleted = current.filter(appointment => !nextById.has(appointment.id));
+      const updated = next.filter(appointment => currentById.has(appointment.id)
+        && currentById.get(appointment.id).status !== appointment.status);
+      await Promise.all([
+        ...deleted.map(appointment => fetch("/api/admin/appointments", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: appointment.id }),
+        })),
+        ...updated.map(appointment => fetch("/api/admin/appointments", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: appointment.id, status: appointment.status }),
+        })),
+      ]).then(async responses => {
+        const failed = responses.find(response => !response.ok);
+        if (failed) {
+          const result = await failed.json();
+          throw new Error(result.error || "Randevu kaydedilemedi.");
+        }
+      });
+    } else {
+      const response = await fetch("/api/admin/data", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ section: key, value: next }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Değişiklik kaydedilemedi.");
+    }
+    setDataState(previous => ({ ...previous, [key]: next }));
   }
 
-  function login() {
-    sessionStorage.setItem("buse-admin", "true");
+  async function login(username, password) {
+    const response = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password }),
+    });
+    const result = await response.json();
+    if (!response.ok) throw new Error(result.error || "Giriş yapılamadı.");
     setLoggedIn(true);
   }
 
-  function logout() {
-    sessionStorage.removeItem("buse-admin");
-    setLoggedIn(false);
+  async function logout() {
+    try {
+      const response = await fetch("/api/admin/logout", { method: "POST" });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Oturum kapatılamadı.");
+      setLoggedIn(false);
+    } catch (error) {
+      setToast(error instanceof Error ? error.message : "Oturum kapatılamadı.");
+    }
   }
 
-  const data = { services, posts, appointments, settings };
   return <>
-    {isAdmin ? loggedIn ? <Dashboard data={data} setData={setData} onLogout={logout} notify={setToast} /> : <AdminLogin onLogin={login} notify={setToast} /> : <Site data={data} notify={setToast} />}
+    {isAdmin
+      ? authChecking
+        ? <main className="admin-view admin-login"><div className="login-box">Oturum doğrulanıyor…</div></main>
+        : loggedIn
+          ? dataLoading
+            ? <main className="admin-view admin-login"><div className="login-box">Yönetim verileri yükleniyor…</div></main>
+            : dataError
+              ? <main className="admin-view admin-login"><div className="login-box">{dataError}</div></main>
+              : <Dashboard data={data} setData={setData} onLogout={logout} notify={setToast} />
+          : <AdminLogin onLogin={login} notify={setToast} />
+      : <Site data={data} notify={setToast} />}
     {toast && <div className={isAdmin ? "admin-toast" : "toast show"} role="status" aria-live="polite">{toast}</div>}
   </>;
 }
