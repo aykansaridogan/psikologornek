@@ -362,7 +362,7 @@ function Booking({ settings, onSubmit, isSubmitting }) {
           </div>
           <div className="form-trap" aria-hidden="true"><label htmlFor="website">Web sitesi</label><input id="website" name="website" tabIndex="-1" autoComplete="off" /></div>
           <button className="pill dark" type="submit" disabled={isSubmitting}>{isSubmitting ? "Gönderiliyor..." : "Görüşme talep et"} {!isSubmitting && <span className="arrow">↗</span>}</button>
-          <p className="form-note">Bilgileriniz yalnızca size geri dönüş yapmak için kullanılır. Talebiniz güvenli bağlantı üzerinden e-posta ile iletilir.</p>
+          <p className="form-note">Bilgileriniz güvenli bağlantı üzerinden kaydedilir ve yalnızca size geri dönüş yapmak için kullanılır.</p>
         </form>
       </div>
     </section>
