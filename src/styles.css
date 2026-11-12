@@ -235,8 +235,10 @@
     body.site-page .contact-form .field textarea{min-height:74px}
     body.site-page .contact-form .field input:focus,body.site-page .contact-form .field textarea:focus,body.site-page .contact-form .field select:focus{border-color:var(--violet);outline:none}
     body.site-page .contact-form .field input::placeholder,body.site-page .contact-form .field textarea::placeholder{color:#9a927f}
+    body.site-page .contact-form .form-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
     body.site-page .contact-form .pill.dark{margin-top:24px;background:var(--violet);border-color:var(--violet);color:#fffdf6}
     body.site-page .contact-form .pill.dark:hover{background:#5c4937;border-color:#5c4937}
+    body.site-page .contact-form .pill:disabled{opacity:.65;cursor:wait}
     body.site-page .contact-form .form-note{color:#756d58;font-size:9px}
     body.site-page .site-header .nav-links{background:var(--canvas)}
     @media(max-width:900px){

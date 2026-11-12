@@ -15,7 +15,7 @@ const initialData = {
   ],
   appointments: [],
   settings: {
-    email: "psk.busecoskun@gmail.com",
+    email: "info@psikologbusecoskun.com",
     phone: "0530 299 41 64",
     address: "İstanbul / Suadiye · Yüz yüze ve online",
     hours: "Pazar hariç, 11.00 — 21.00",
@@ -55,7 +55,10 @@ function readData(key) {
         ...saved,
         ...Object.fromEntries(Object.entries(initialData.settings).map(([field, value]) => [
           field,
-          saved[field] === previousDefaults.settings[field] ? value : (saved[field] ?? value),
+          saved[field] === previousDefaults.settings[field]
+            || (field === "email" && saved[field] === "psk.busecoskun@gmail.com")
+            ? value
+            : (saved[field] ?? value),
         ])),
       };
     }
@@ -401,7 +404,7 @@ function FrequentlyAskedQuestions() {
   );
 }
 
-function Booking({ settings, onSubmit }) {
+function Booking({ settings, onSubmit, isSubmitting }) {
   const phoneDigits = settings.phone.replace(/\D/g, "");
   const whatsappPhone = phoneDigits.startsWith("0") ? `90${phoneDigits.slice(1)}` : phoneDigits;
   const instagramHandle = settings.instagram.replace(/^@/, "");
@@ -432,10 +435,11 @@ function Booking({ settings, onSubmit }) {
             <div className="field"><label htmlFor="name">Adınız soyadınız</label><input id="name" name="name" required autoComplete="name" placeholder="Adınız Soyadınız" /></div>
             <div className="field"><label htmlFor="email">E-posta adresiniz</label><input id="email" name="email" type="email" required autoComplete="email" placeholder="ornek@email.com" /></div>
             <div className="field"><label htmlFor="phone">Telefon numaranız</label><input id="phone" name="phone" type="tel" required autoComplete="tel" placeholder="+90 5XX XXX XX XX" /></div>
-            <div className="field full"><label htmlFor="message">Paylaşmak istedikleriniz <span style={{ letterSpacing: 0, textTransform: "none" }}>(isteğe bağlı)</span></label><textarea id="message" name="message" placeholder="Kısaca not bırakabilirsiniz..." /></div>
+            <div className="field full"><label htmlFor="message">Paylaşmak istedikleriniz <span style={{ letterSpacing: 0, textTransform: "none" }}>(isteğe bağlı)</span></label><textarea id="message" name="message" maxLength={2000} placeholder="Kısaca not bırakabilirsiniz..." /></div>
           </div>
-          <button className="pill dark" type="submit">Görüşme talep et <span className="arrow">↗</span></button>
-          <p className="form-note">Bilgileriniz yalnızca size geri dönüş yapmak için kullanılır.</p>
+          <div className="form-trap" aria-hidden="true"><label htmlFor="website">Web sitesi</label><input id="website" name="website" tabIndex="-1" autoComplete="off" /></div>
+          <button className="pill dark" type="submit" disabled={isSubmitting}>{isSubmitting ? "Gönderiliyor..." : "Görüşme talep et"} {!isSubmitting && <span className="arrow">↗</span>}</button>
+          <p className="form-note">Bilgileriniz yalnızca size geri dönüş yapmak için kullanılır. Talebiniz güvenli bağlantı üzerinden e-posta ile iletilir.</p>
         </form>
       </div>
     </section>
@@ -459,7 +463,9 @@ function Footer({ settings }) {
   );
 }
 
-function Site({ data, setAppointments, notify }) {
+function Site({ data, notify }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let scrollDirection = "down";
@@ -503,23 +509,36 @@ function Site({ data, setAppointments, notify }) {
     };
   }, [data.services, data.posts]);
 
-  function submitAppointment(event) {
+  async function submitAppointment(event) {
     event.preventDefault();
     const form = event.currentTarget;
     const fields = new FormData(form);
-    const appointment = {
-      id: `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`,
-      name: fields.get("name").trim(),
-      email: fields.get("email").trim(),
-      phone: fields.get("phone").trim(),
-      service: "Belirtilmedi",
-      message: fields.get("message").trim(),
-      date: new Date().toLocaleDateString("tr-TR"),
-      status: "Beklemede",
+    const payload = {
+      name: String(fields.get("name") || "").trim(),
+      email: String(fields.get("email") || "").trim(),
+      phone: String(fields.get("phone") || "").trim(),
+      message: String(fields.get("message") || "").trim(),
+      website: String(fields.get("website") || "").trim(),
     };
-    setAppointments(previous => [appointment, ...previous]);
-    form.reset();
-    notify("Talebiniz ulaştı. En kısa sürede sizinle iletişime geçeceğim.");
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/appointment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+
+      form.reset();
+      notify("Talebiniz e-posta ile gönderildi.");
+    } catch (error) {
+      console.error("Randevu talebi gönderilemedi:", error);
+      notify(error instanceof Error ? error.message : "Talep gönderilemedi. Lütfen daha sonra tekrar deneyin.");
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -529,7 +548,7 @@ function Site({ data, setAppointments, notify }) {
         <Hero /><Marquee />
         <FocusAreas />
         <section className="quote-band"><div className="wrap quote-inner reveal"><div className="quote-mark">“</div><blockquote>Her şey, kendine<br />kulak vermekle başlar.</blockquote><cite>Kendinle kurduğun ilişki, her şeyin başlangıcı.</cite></div></section>
-        <About /><CounselingProcess /><FrequentlyAskedQuestions /><Booking settings={data.settings} onSubmit={submitAppointment} />
+        <About /><CounselingProcess /><FrequentlyAskedQuestions /><Booking settings={data.settings} onSubmit={submitAppointment} isSubmitting={isSubmitting} />
       </main>
       <Footer settings={data.settings} />
     </>
@@ -706,7 +725,7 @@ export default function App() {
 
   const data = { services, posts, appointments, settings };
   return <>
-    {isAdmin ? loggedIn ? <Dashboard data={data} setData={setData} onLogout={logout} notify={setToast} /> : <AdminLogin onLogin={login} notify={setToast} /> : <Site data={data} setAppointments={setAppointments} notify={setToast} />}
+    {isAdmin ? loggedIn ? <Dashboard data={data} setData={setData} onLogout={logout} notify={setToast} /> : <AdminLogin onLogin={login} notify={setToast} /> : <Site data={data} notify={setToast} />}
     {toast && <div className={isAdmin ? "admin-toast" : "toast show"} role="status" aria-live="polite">{toast}</div>}
   </>;
 }
