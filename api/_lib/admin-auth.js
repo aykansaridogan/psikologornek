@@ -19,7 +19,12 @@ function signature(payload, secret) {
 function readCookie(request) {
   const cookieHeader = request.headers.cookie || "";
   const cookie = cookieHeader.split(";").map(value => value.trim()).find(value => value.startsWith(`${cookieName}=`));
-  return cookie ? decodeURIComponent(cookie.slice(cookieName.length + 1)) : "";
+  if (!cookie) return "";
+  try {
+    return decodeURIComponent(cookie.slice(cookieName.length + 1));
+  } catch {
+    return "";
+  }
 }
 
 function validSession(request, config) {

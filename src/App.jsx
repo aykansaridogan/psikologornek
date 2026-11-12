@@ -23,83 +23,6 @@ const initialData = {
   },
 };
 
-const previousDefaults = {
-  services: [
-    { id: "s1", title: "Bireysel Terapi", description: "Kendinizi anlamak, duygularınıza alan açmak ve kendi yolunuzu bulmak için güvenli bir alan.", price: "50 dakika", icon: "○" },
-    { id: "s2", title: "Online Terapi", description: "Bulunduğunuz yerden, kendi ritminizde. Görüntülü görüşme ile aynı özenli ve güvenli süreç.", price: "50 dakika", icon: "⌁" },
-    { id: "s3", title: "Ön Görüşme", description: "Tanışmak, ihtiyaçlarınızı konuşmak ve birlikte çalışmanın size uygun olup olmadığını keşfetmek için.", price: "Ücretsiz · 20 dakika", icon: "✳" },
-  ],
-  settings: {
-    email: "merhaba@busecoskun.com",
-    phone: "+90 532 000 00 00",
-    address: "Kadıköy, İstanbul · Online seans imkânı",
-    hours: "Pazartesi — Cuma, 10.00 — 18.00",
-    instagram: "@psikologbusecoskun",
-  },
-};
-
-const publishedServiceDefaults = [
-  { id: "s1", title: "Bireysel Psikoterapi", description: "Ergen ve yetişkinlerle; Bilişsel Davranışçı Terapi (BDT) ve EMDR yaklaşımlarını içeren bireysel çalışmalar.", price: "50 dakika · Yüz yüze / online", icon: "○" },
-  { id: "s2", title: "Sanat Terapisi", description: "Sanat terapisi temelli grup çalışmalarıyla kendinizi yaratıcı yollarla keşfedebileceğiniz bir alan.", price: "Grup çalışmaları", icon: "⌁" },
-  { id: "s3", title: "Yaratıcı Atölyeler", description: "Duygulara, ilişkilere ve kendini keşfetmeye alan açan yaratıcı atölyeler.", price: "Atölye çalışmaları", icon: "✳" },
-];
-
-function readData(key) {
-  try {
-    const stored = localStorage.getItem(`buse-${key}`);
-    if (!stored) return structuredClone(initialData[key]);
-
-    const saved = JSON.parse(stored);
-    if (key === "settings") {
-      return {
-        ...saved,
-        ...Object.fromEntries(Object.entries(initialData.settings).map(([field, value]) => [
-          field,
-          saved[field] === previousDefaults.settings[field]
-            || (field === "email" && saved[field] === "psk.busecoskun@gmail.com")
-            ? value
-            : (saved[field] ?? value),
-        ])),
-      };
-    }
-    if (key === "services" && Array.isArray(saved)) {
-      const knownDefaults = [previousDefaults.services, publishedServiceDefaults, initialData.services];
-      const matchingDefaults = knownDefaults.find(defaults => defaults.every(defaultService => (
-        saved.some(service => service.id === defaultService.id
-          && Object.entries(defaultService).every(([field, value]) => service[field] === value))
-      )));
-      if (matchingDefaults) {
-        const customServices = saved.filter(service => !matchingDefaults.some(defaultService => (
-          service.id === defaultService.id
-          && Object.entries(defaultService).every(([field, value]) => service[field] === value)
-        )));
-        const defaultServices = structuredClone(initialData.services);
-        return [
-          ...defaultServices,
-          ...customServices.filter(service => !defaultServices.some(defaultService => defaultService.id === service.id)),
-        ];
-      }
-      return saved;
-    }
-    return saved;
-  } catch (error) {
-    console.error(`Kayıtlı ${key} verileri okunamadı:`, error);
-    return structuredClone(initialData[key]);
-  }
-}
-
-function useStoredData(key) {
-  const [value, setValue] = useState(() => readData(key));
-  useEffect(() => {
-    try {
-      localStorage.setItem(`buse-${key}`, JSON.stringify(value));
-    } catch (error) {
-      console.error(`${key} verileri kaydedilemedi:`, error);
-    }
-  }, [key, value]);
-  return [value, setValue];
-}
-
 function Brand({ footer = false }) {
   return footer ? (
     <a className="footer-brand" href="#home">Buse <em>Coşkun</em></a>
@@ -760,7 +683,11 @@ export default function App() {
         if (active) setDataState(current => ({ ...current, ...result }));
       })
       .catch(error => {
-        if (active) setDataError(error instanceof Error ? error.message : "İçerikler yüklenemedi.");
+        if (active) {
+          const message = error instanceof Error ? error.message : "İçerikler yüklenemedi.";
+          setDataError(message);
+          if (!isAdmin) setToast(message);
+        }
       })
       .finally(() => {
         if (active) setDataLoading(false);
